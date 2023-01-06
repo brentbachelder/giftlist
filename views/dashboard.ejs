@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/app.css">
+    <title>Gift List App</title>
+</head>
+<body>
+    <h1>Hi <%= name %>!</h1>
+    <form action="/logout?_method=DELETE" method="POST">
+        <button type="submit">Log Out</button>
+    </form>
+    <h2>My Lists</h2>
+        <% if(Object.keys(myLists).length > 0) { %>
+            <% Object.keys(myLists).forEach(function(key) { %>
+                <a href="/dashboard/list/<%= myLists[key].id%>"><%= myLists[key].name %></a><br />
+            <% }) %>
+        <% }  else  { %>
+            - No lists -
+        <% } %> 
+        <br /><a href="/dashboard/newlist"><b>Create a new List</b></a>
+    <h2>Favorited Lists</h2>
+        <% if(Object.keys(favoriteLists).length > 0) { %>
+            <% Object.keys(favoriteLists).forEach(function(key) { %>
+                <a href="/list/<%= favoriteLists[key].id%>"><%= favoriteLists[key].name %></a><br />
+            <% }) %>
+        <% }  else  { %>
+            - No lists -
+        <% } %><br />
+    <form action="/dashboard" method="post">
+        <div>
+            <label for="list">Go to a list</label>
+            <input type="text" id="list" name="list" required>
+        </div>
+        <button type="submit">GO!</button>
+    </form>
+</body>
+</html>

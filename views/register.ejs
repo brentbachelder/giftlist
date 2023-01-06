@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/app.css">
+    <title>Register - GiftList</title>
+</head>
+<body style="background-color: var(--main);">
+    <div class="reglog-container">
+        <div class="reglog">
+            <header>
+                <a class="cancel-back" href="javascript:history.back()">
+                    <svg width="24" height="24"><path d="M3.281 12.822l5.383 6.258c.437.428.45 1.135.027 1.579a1.09 1.09 0 01-1.557.028L.336 12.929A1.128 1.128 0 01.31 11.35l6.796-8.009a1.092 1.092 0 011.558-.028c.437.429.45 1.136.027 1.58l-5.42 6.473a1.126 1.126 0 00.01 1.456z"></path></svg>
+                </a>
+                <h1>Sign up</h1>
+                <a class="cancel-back" href="/">Cancel</a>
+            </header>
+            <div class="logo-container">
+                <div style="font-size: 40px; font-weight: 900; color: var(--main)"><b>GiftList</b></div>
+            </div>
+            <div>
+                <form action="/login" method="post" id="login-form">
+                    <div class="form-container">
+                        <div class="input-container">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="password">Password</label>
+                            <div class="password-container">
+                                <input type="password" id="password" name="password" required>
+                                <div id="show-password" onclick="showPassword()">Show</div>
+                            </div>
+                        </div>
+                        <a class="signup" href="/login">Already have an account? Log in</a>
+                    </div>
+                </form>
+            </div>
+            <div class="terms-container">
+                <div class="terms">Why do we need your email address? <a href="/register/whycreate">Find out</a></div>
+            </div>
+            <button form="login-form" type="submit">Sign up</button>
+        </div>
+    </div>
+    <script>
+        function showPassword() {
+            var x = document.getElementById("password");
+            var y = document.getElementById("show-password");
+            if (x.type === "password") {
+                x.type = "text";
+                y.innerText = "Hide"
+            } else {
+                x.type = "password";
+                y.innerText = "Show"
+            }
+        }
+    </script>
+</body>
+</html>
