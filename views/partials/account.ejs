@@ -1,0 +1,35 @@
+<div id="account">
+    <div id="account-background" onclick="document.getElementById('account').classList.remove('showing');"></div>
+    <div class="reglog">
+        <header>
+            <div class="cancel-back" onclick="document.getElementById('account').classList.remove('showing');">
+                <svg width="24" height="24"><path d="M3.281 12.822l5.383 6.258c.437.428.45 1.135.027 1.579a1.09 1.09 0 01-1.557.028L.336 12.929A1.128 1.128 0 01.31 11.35l6.796-8.009a1.092 1.092 0 011.558-.028c.437.429.45 1.136.027 1.58l-5.42 6.473a1.126 1.126 0 00.01 1.456z"></path></svg>
+            </div>
+            <h1>Account Settings</h1>
+            <div class="cancel-back no-hover"></div>
+        </header>
+        <div>    
+            <form action="/login" method="post" id="settings-form">
+                <div class="form-container">
+                    <div class="input-container">
+                        <label for="name">Name</label>
+                        <input type="name" id="name" name="name" value="<%= user.name %>" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="<%= user.email %>" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="picture">Picture Link</label>
+                        <input type="picture" id="picture" name="picture" value="<%= user.picture %>" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div style="flex-grow: 1;"></div>
+        <button style="margin-top: 16px;" form="settings-form" type="submit" disabled>Save</button>
+        <form action="/logout?_method=DELETE" method="POST">
+            <button style="margin-top: 8px;" class="inverse" type="submit">Log Out</button>
+        </form>
+    </div>
+</div>

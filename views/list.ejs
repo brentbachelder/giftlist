@@ -9,20 +9,14 @@
     <title><%= list.name %> - GiftList</title>
 </head>
 <body>
+    <%- include('partials/account') %>
+    <%- include('partials/navbar') %>
     <div class="page-container">
-        <div>
-            <% console.log("SAve: " + list.isSaved) %>
-            <h1><%= list.name %></h1>
-            <% if(list.isSaved) { %>
-                <form target="hiddenFrame" method="post"><button type="submit" id="saveButton" onclick="changeSave()">Remove Save</button></form>
-            <% } else { %>
-                <form target="hiddenFrame" method="post"><button type="submit" id="saveButton" onclick="changeSave()">Save</button></form>
-            <% } %>
-        </div>
-        <h2><%= list.description %></h2>
-        
-        
-        <div class="list-container">
+        <div class="main-container">
+            <header>
+                <h1><%= list.name %></h1>
+            </header>
+            <% if(list.description != null) { %><div class="header-description"><%= list.description %></div><% } %>
             <% Object.keys(gifts).forEach(key => { %>
                 <div class="list-item">
                     <div class="image-container">
@@ -46,7 +40,7 @@
     <iframe name="hiddenFrame" style="display: none;"></iframe>
     
     <script>
-        let userId = parseInt(`<%- myid %>`);
+        let userId = parseInt(`<%- user.id %>`);
         let saveButton = document.getElementById("saveButton");
         let reserves = document.getElementsByClassName("reserve-status");
         

@@ -17,14 +17,18 @@ a:hover { color: var(--text-hover); }
 button { width: 100%; display: flex; justify-content: center; align-items: center; padding: 12px; border: 0; border-radius: 20px;
     background-color: var(--main); color: #ffffff; font-size: 16px; font-weight: 700; }
 button:hover { cursor: pointer; background-color: var(--main-hover); }
+button.inverse { background-color: #ffffff; color: var(--main); width: auto; }
+button.inverse:hover { color: var(--main-hover); }
 
 .reglog-container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;}
-.reglog { width: 100%; max-width: 476px; height: 665px; padding: 32px; background-color: #ffffff; border-radius: 4px; display: flex; flex-direction: column; }
+.reglog { width: 100%; max-width: 476px; height: 665px; padding: 32px; background-color: #ffffff; border-radius: 4px; display: flex; 
+    flex-direction: column; align-items: center; }
 
 header { height: 48px; width: 100%; display: flex; justify-content: space-between; align-items: top; }
 h1 { text-align: center; font-size: 24px; font-weight: 900; margin: 0; }
+.header-description { width: 100%; font-size: 14px; font-weight: 400; margin: -16px 0 16px 0; }
 .cancel-back { width: 60px; font-size: 16px; font-weight: 400; color: var(--text); text-decoration: none; margin: 0; padding: 0; }
-.cancel-back:hover { cursor: pointer; color: var(--main-hover); }
+.cancel-back:not(.no-hover):hover { cursor: pointer; color: var(--main-hover); }
 
 .logo-container { height: 40px; margin: 16px 0 32px 0; display: flex; justify-content: center; align-items: center; }
 .password-container { width: 100%; border-radius: 8px; border: 1px solid #cccccc; display: flex; align-items: center; padding-right: 16px; }
@@ -32,8 +36,22 @@ h1 { text-align: center; font-size: 24px; font-weight: 900; margin: 0; }
     .password-container:focus-within { border: 1px solid var(--main); }
     #show-password { width: 44px; font-size: 14px; font-weight: 700; color: var(--main); }
     #show-password:hover { cursor: pointer; text-decoration: underline; }
-    
 
+#account { position: absolute; top: 0; left: 0; width: 100vw; height: 0; display: flex; background-color: rgba(0, 0, 0, .8); justify-content: center; overflow: hidden;
+    align-items: center; z-index: 2; white-space: nowrap; transition-duration: .3s; }
+#account.showing { height: 100vh; }
+#account-background { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
+
+#navbar { width: 100%; height: 60px; background-color: var(--main); margin-bottom: 24px; display: flex; justify-content: center; }
+    .navbar-container { width: 100%; height: 100%; max-width: 1024px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar-logo-container { font-size: 40px; font-weight: 900; color: #ffffff; }
+        .navbar-logo-container:hover { cursor: pointer; }
+        .navbar-user-container { display: flex; align-items: center; gap: 16px; padding: 8px; border-radius: 8px; }
+            .user-picture { height: 30px; width: 30px; border-radius: 15px; background-color: #ffffff; }
+            .user-picture > img { height: auto; width: auto; max-height: 100%; max-width: 100%; }
+            .user-name { font-size: 16px; font-weight: 500; color: #ffffff; }
+        .navbar-user-container:hover { cursor: pointer; background-color: var(--main-hover); }
+        /*.navbar-user-container:hover .user-name { color: #dddddd; }*/
 
 a.signup { width: 100%; height: 40px; margin: 4px; text-align: center; color: var(--main); align-items: center; font-size: 18px; font-weight: 900; text-decoration: none; }
 a.signup:hover { color: var(--main-hover); }
@@ -42,10 +60,11 @@ a.signup:hover { color: var(--main-hover); }
 .terms { width: 100%; font-size: 14px; font-weight: 400; line-height: 24px; padding: 16px; text-align: center; }
 
 .page-container { width: 100vw; display: flex; flex-direction: column; align-items: center; }
+.main-container { width: 100%; max-width: 1024px; font-size: min(calc(100% / 64), calc(1024px / 64)); display: flex; flex-wrap: wrap; margin: 8px 0; justify-content: center; }
+.main-container > header, .main-container > .header-description { margin-left: 16px; }
 
 
-.list-container { width: 100%; max-width: 1024px; font-size: min(calc(100% / 64), calc(1024px / 64)); display: flex; flex-wrap: wrap; margin: 8px 0; justify-content: center; }
-.list-item { width: calc((100% - 16px) / 2); max-width: 300px; margin: 4px; border: 1px solid var(--text-hover); border-radius: 8px; display: flex;
+.list-item { width: calc((100% - 16px) / 2); max-width: 248px; margin: 4px; border: 1px solid var(--text-hover); border-radius: 8px; display: flex;
     flex-direction: column; align-items: center; }
     .list-item > .image-container { position: relative; }
         .list-item > .image-container > img { width: auto; height: auto; max-width: 100%; max-height: 300px; border-radius: 8px; }
@@ -69,4 +88,5 @@ a.signup:hover { color: var(--main-hover); }
 
 @media(max-width: 476px) {
     .reglog { height: 100vh; border-radius: 0; }
+    #account > .reglog { height: auto; width: calc(100vw - 32px); border-radius: 8px; }
 }

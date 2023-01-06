@@ -102,8 +102,7 @@ app.get('/dashboard/list/:id', checkAuthenticated, (req, res, next) => { req.isC
 })
 
 app.get('/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = false; return next(); }, getListInfo, checkIfSaved, getGifts, getGifterName, (req, res) => {
-    console.log(gifts);
-    res.render('list.ejs', { myid: req.user.id, list: list, gifts: gifts })
+    res.render('list.ejs', { user: req.user, list: list, gifts: gifts })
 })
 
 app.post('/list/:id', checkAuthenticated, addRemoveFavoritedList)
