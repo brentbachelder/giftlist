@@ -8,8 +8,8 @@
             <h1>Account Settings</h1>
             <div class="cancel-back no-hover"></div>
         </header>
-        <div>    
-            <form action="/login" method="post" id="settings-form">
+        <div style="width: 100%;">    
+            <form target="hiddenAccountFrame" method="POST" id="settings-form" action="/dashboard/updatesettings">
                 <div class="form-container">
                     <div class="input-container">
                         <label for="name">Name</label>
@@ -20,16 +20,90 @@
                         <input type="email" id="email" name="email" value="<%= user.email %>" required>
                     </div>
                     <div class="input-container">
-                        <label for="picture">Picture Link</label>
-                        <input type="picture" id="picture" name="picture" value="<%= user.picture %>" required>
+                        <label for="picture-fake">Picture Link</label>
+                        <input type="text" id="picture-fake" name="picture-fake" onpaste="setTimeout(() => {this.blur()}, 4);" onblur="imageExists(this.value)" 
+                            onkeypress="if(event.keyCode==13) { event.preventDefault(); this.blur(); }" value="<%= user.picture %>">
+                        <input type="hidden" id="picture" name="picture" value="<%= user.picture %>">
                     </div>
+                    <% if(user.picture == null || user.picture == '') { %>
+                    <div style="width: 100%; text-align: right;">
+                        <a href="https://www.lifewire.com/copy-image-web-address-url-1174175" target="_blank">How do I add a picture link?</a>
+                    </div>
+                    <% } %>
                 </div>
             </form>
         </div>
+        <div class="picture-preview">
+            <div style="display: flex; align-items: center;"><label>Picture Preview</label><div id="picture-error">* Not a valid picture</div></div>
+            <div id="user-picture-preview" class="user-picture" style="height: 128px; width: 128px; 
+                background-image: url('<% if(user.picture != null) { %><%= user.picture %><% } else { %>/no-user-icon.png<% } %>')">
+            </div>
+        </div>
         <div style="flex-grow: 1;"></div>
-        <button style="margin-top: 16px;" form="settings-form" type="submit" disabled>Save</button>
+        <button style="margin-top: 16px;" form="settings-form" type="submit" onclick="saveAndClose()">Save</button>
         <form action="/logout?_method=DELETE" method="POST">
             <button style="margin-top: 8px;" class="inverse" type="submit">Log Out</button>
         </form>
     </div>
 </div>
+<iframe name="hiddenAccountFrame" style="display: none;"></iframe>
+
+<script>
+    document.getElementById("settings-form").addEventListener("submit", (event) => {
+        console.log("Java submitted")
+        //event.preventDefault();
+
+        //sendData();
+    });
+    
+    function saveAndClose() {
+        var newPicture = document.getElementById('picture').value;
+        if(newPicture == null) newPicture = '/no-user-icon-png';
+        document.getElementById('user-name').innerText = document.getElementById('name').value;
+        document.getElementById('user-picture').style.backgroundImage = newPicture;
+        document.getElementById('account').classList.remove('showing');
+    }
+    
+    function changePicture(image) {
+        console.log("Exists? " + image);
+        if(image == null || image == '') {
+            document.getElementById("user-picture-preview").style.backgroundImage = "url('/no-user-icon.png')";
+            document.getElementById("picture").value = null;
+            if(image == null) document.getElementById("picture-error").style.display = "block";
+            else document.getElementById("picture-error").style.display = "none";
+        }
+        else {
+            document.getElementById("user-picture-preview").style.backgroundImage = `url('${image}')`;
+            document.getElementById("picture").value = image;
+            document.getElementById("picture-error").style.display = "none";
+        }
+    }
+
+    function imageExists(image_url) {
+        if(image_url != '') {
+            var isValidUrl = isValidHttpUrl(image_url);
+            if(isValidUrl) {
+                fetch(image_url, { method: 'HEAD' })
+                .then(res => {
+                    if (res.ok) {
+                        changePicture(image_url);
+                    } else {
+                        changePicture(null);
+                    }
+                }).catch(err => { changePicture(null) });
+            }
+            else changePicture(null);
+        }
+        else changePicture('')
+    }
+
+    function isValidHttpUrl(string) {
+        let url;
+        try {
+            url = new URL(string);
+        } catch (_) {
+            return false;
+        }
+        return url.protocol === "http:" || url.protocol === "https:";
+    }
+</script>

@@ -2,10 +2,9 @@
     <div class="navbar-container">
         <div class="navbar-logo-container" tabindex="0" onclick="location.href='/dashboard'">GiftList</div>
         <div class="navbar-user-container" tabindex="0" onclick="document.getElementById('account').classList.add('showing');">
-            <div class="user-name"><%= user.name %></div>
-            <div class="user-picture">
-                <% if(user.picture != null) { %> <img src="<%= user.picture %>">
-                <% } else { %> <img src="/no-user-icon.png"> <% } %>
+            <div id="user-name" class="user-name"><%= user.name %></div>
+            <div id="user-picture" class="user-picture" style="height: 30px; width: 30px; 
+                background-image: url('<% if(user.picture != null) { %><%= user.picture %><% } else { %>/no-user-icon.png<% } %>')">
             </div>
         </div>
     </div>

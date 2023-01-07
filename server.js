@@ -89,7 +89,9 @@ app.get('/dashboard', checkAuthenticated, getMyLists, getMyFavorites, (req, res)
     res.render('dashboard.ejs', { name: req.user.name, myLists: req.myLists, favoriteLists: req.favoriteLists })
 });
 
-app.post('/dashboard', checkAuthenticated, findList) 
+app.post('/dashboard', checkAuthenticated, findList)
+
+app.post('/dashboard/updatesettings', checkAuthenticated, updateUserInfo)
 
 app.get('/dashboard/newlist', checkAuthenticated, (req, res) => {
     res.render('newList.ejs')
@@ -195,6 +197,22 @@ async function registerUser(req, res) {
     }
 }
 
+function updateUserInfo(req, res) {
+    try {
+        const q = "UPDATE members SET name = ?, email = ?, picture = ? WHERE id = ?";
+        //const path = req.params.path;
+        //console.log(req.params.path)
+
+        db.query(q, [req.body.name, req.body.email, req.body.picture, req.user.id], (err, data) => {
+            if(err) console.log(err);
+            console.log("Successful")
+            res.send()
+        })
+    } catch(e) {
+        return console.log(e);
+    }
+}
+
 // Creates a new list
 function createNewList(req, res) {
     try {
@@ -250,8 +268,8 @@ function getListInfo(req, res, next) {
     db.query("SELECT * FROM lists WHERE id = ?", [listId], function(err, data) {
         if(err) return res.json(err);
         if(Object.keys(data).length > 0) {
-            if(!req.isCreator && data[0].creator == req.user.id) return res.redirect('/dashboard/list/' + listId)
-            else if(req.isCreator && data[0].creator != req.user.id) return res.redirect('/list/' + listId)
+            if(!req.isCreator && data[0].creator == req.user.id) res.redirect('/dashboard/list/' + listId)
+            else if(req.isCreator && data[0].creator != req.user.id) res.redirect('/list/' + listId)
             list = data[0]
             return next()
         }
