@@ -13,7 +13,7 @@
                 <div class="form-container">
                     <div class="input-container">
                         <label for="name">Name</label>
-                        <input type="name" id="name" name="name" value="<%= user.name %>" required>
+                        <input type="text" id="name" name="name" value="<%= user.name %>" required>
                     </div>
                     <div class="input-container">
                         <label for="email">Email</label>
@@ -57,11 +57,26 @@
     });
     
     function saveAndClose() {
-        var newPicture = document.getElementById('picture').value;
-        if(newPicture == null) newPicture = '/no-user-icon-png';
-        document.getElementById('user-name').innerText = document.getElementById('name').value;
-        document.getElementById('user-picture').style.backgroundImage = newPicture;
-        document.getElementById('account').classList.remove('showing');
+        var re = /\S+@\S+\.\S+/;
+        if(document.getElementById("name").value != '' && document.getElementById("email").value != '' && validateEmail(document.getElementById('email').value)) {
+            var newPicture = document.getElementById('picture').value;
+            if(newPicture == null) newPicture = '/no-user-icon-png';
+            document.getElementById('user-name').innerText = document.getElementById('name').value;
+            document.getElementById('user-picture').style.backgroundImage = newPicture;
+            document.getElementById('account').classList.remove('showing');
+        }
+    }
+
+    function validateEmail(email) {
+        var input = document.createElement('input');
+        input.type='email';
+        input.value = document.getElementById('email').value;
+            
+        if (input.checkValidity()) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     function changePicture(image) {

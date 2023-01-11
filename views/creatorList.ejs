@@ -5,14 +5,47 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/app.css">
-    <title><%= list.name %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <title><%= list.name %> - GiftList</title>
 </head>
 <body>
-    <h1><%= list.name %></h1>
-    <a href="/dashboard/list/<%= list.id %>/newgift">Add Gift</a>
-    <h2><%= list.description %></h2>
-    <% Object.keys(gifts).forEach(key => { %>
-        <div><%= gifts[key].title %> - <%= gifts[key].description %></div>
-    <% }) %>
+    <%- include('partials/account') %>
+    <%- include('partials/navbar') %>
+    <div class="page-container">
+        <div class="main-container">
+            <header>
+                <h1 class="page"><%= list.name %><% if(list.description != null) { %><br /><div class="header-description"><%= list.description %></div><% } %></h1>
+                <button onclick="window.location.href = './<%= list.id %>/newgift';" class="small" style="margin-top: 12px;">+ Add Gift</button>
+            </header>
+            
+            <% Object.keys(gifts).forEach(key => { %>
+                <div class="creator-list-item-container">
+                    <div class="creator-list-picture-container">
+                        <% if(gifts[key].picture != null) { %><img src="<%= gifts[key].picture %>"><% } else { %><img src="/no-picture.png"><% } %>
+                    </div>
+                    <div class="creator-list-details">
+                        <div class="name"><%= gifts[key].title %></div>
+                        <div class="description">
+                            <% if(gifts[key].size != null) { %><div><b>Size:</b> <%= gifts[key].size %></div>
+                                <% } else { %><div><b>Size:</b> (none)</div><% } %>
+                            <% if(gifts[key].color != null) { %><div><b>Color:</b> red</div>
+                                <% } else { %><div><b>Color:</b> (none)</div><% } %>
+                            <% if(gifts[key].details != null) { %><div><b>Details:</b> <%= gifts[key].details %></div>
+                                <% } else { %><div><b>Details:</b> (none)</div><% } %>
+                        </div>
+                        <div class="creator-list-price-link">
+                            <% if(gifts[key].price != null) { %><div><b>Price:</b> $<%= parseFloat(gifts[key].price).toFixed(2) %></div>
+                                <% } else { %><div style="height: 25px;"><b>Price:</b> (none)</div><% } %>
+                            <% if(gifts[key].price != null) { %><a href="<%= gifts[key].link %>" target="_blank"><b>Item Link</b></a>
+                                <% } else { %><div><b>Link:</b> (none)</div><% } %>
+                            <a href="./editgift?id=<%= gifts[key].id %>" style="color: var(--main);">
+                                <div class="material-symbols-outlined">edit</div><b>&nbsp;&nbsp;EDIT</b>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
 </body>
 </html>

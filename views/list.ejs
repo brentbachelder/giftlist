@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,1,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <title><%= list.name %> - GiftList</title>
 </head>
 <body>
@@ -14,9 +14,19 @@
     <div class="page-container">
         <div class="main-container">
             <header>
-                <h1><%= list.name %></h1>
+                <h1 class="page"><%= list.name %><% if(list.description != null) { %><br /><div class="header-description"><%= list.description %></div><% } %></h1>
+                <form target="hiddenFrame" method="post">
+                <% if(list.isSaved) { %>
+                    <button type="submit" id="saveButton" onclick="changeSave()" class="small saved" style="margin-top: 12px;">
+                        + List Saved
+                    </button>
+                <% } else { %>
+                    <button type="submit" id="saveButton" onclick="changeSave()" class="small" style="margin-top: 12px;">
+                        <div class="material-symbols-outlined">bookmark</div>Save List
+                    </button>
+                <% } %>
             </header>
-            <% if(list.description != null) { %><div class="header-description"><%= list.description %></div><% } %>
+            
             <% Object.keys(gifts).forEach(key => { %>
                 <div class="list-item">
                     <div class="image-container">
@@ -25,7 +35,7 @@
                     </div>
                     <div class="name"><%= gifts[key].title %></div>
                     <div class="price-link">
-                        <div class="price">$<%= gifts[key].price %></div>
+                        <div class="price">$<%= parseFloat(gifts[key].price).toFixed(2) %></div>
                         <% if(gifts[key].link != null) { %><a href="<%= gifts[key].link %>" target="_blank">Visit Link</a><% } %>
                     </div>
                     <div class="description">
@@ -52,8 +62,14 @@
         }
         
         function changeSave() {
-            if(saveButton.innerText =="Save") saveButton.innerText = "Remove Save";
-            else saveButton.innerText = "Save";
+            if(saveButton.classList.contains("saved")) {
+                saveButton.classList.remove("saved");
+                saveButton.innerHTML = `<div class="material-symbols-outlined">bookmark</div>Save List`;
+            }
+            else {
+                saveButton.classList.add("saved");
+                saveButton.innerText = "+ List Saved";
+            }
         }
 
         function changeReserve(giftId, gifterId, gifterName) {
@@ -62,7 +78,7 @@
             if(gifterId == '') {
                 element.classList.remove('taken');
                 element.innerHTML = `
-                <div class="material-symbols-sharp" style="margin-top: 0;">label_important</div>    
+                <div class="material-symbols-outlined" style="margin-top: 0;">label_important</div>    
                 <form id="reserve-${giftId}" name="reserve-${giftId}" target="hiddenFrame" action="?_method=PUT&id=${giftId}&reserve=true" method="post"></form>
                     <div class="reserve-overlay-text" tabindex="0" onclick="submitReserve(true, ${giftId})">Reserve</div>`;
             }
@@ -70,14 +86,13 @@
                 element.classList.add('taken');
                 if(gifterId == userId) {
                     element.innerHTML = `
-                        <div class="material-symbols-sharp">grade</div>
-                        <div class="reserve-overlay-text" style="text-transform: uppercase;">Reserved by me</div>
+                        <div class="reserve-overlay-text" style="text-transform: uppercase;"><span class="material-symbols-outlined">grade</span>Reserved by me</div>
                         <form id="reserve-${giftId}" name="reserve-${giftId}" target="hiddenFrame" action="?_method=PUT&id=${giftId}&reserve=false" method="post"></form>
                         <div class="reserve-overlay-text remove" tabindex="0" onclick="submitReserve(false, ${giftId})"><small>Remove</small></div>`;
                 }
                 else element.innerHTML = `
-                    <div class="material-symbols-sharp">grade</div>
-                    <div class="reserve-overlay-text" style="text-transform: uppercase;">Reserved by ${gifterName}</div>`;
+                    
+                    <div class="reserve-overlay-text" style="text-transform: uppercase;"><span class="material-symbols-outlined">grade</span>Reserved by ${gifterName}</div>`;
             }
         }
 

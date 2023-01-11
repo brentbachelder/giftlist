@@ -8,19 +8,62 @@
     <title>Gift List App</title>
 </head>
 <body>
-    <h1>Hi <%= name %>!</h1>
-    <form action="/logout?_method=DELETE" method="POST">
-        <button type="submit">Log Out</button>
-    </form>
-    <h2>My Lists</h2>
-        <% if(Object.keys(myLists).length > 0) { %>
-            <% Object.keys(myLists).forEach(function(key) { %>
-                <a href="/dashboard/list/<%= myLists[key].id%>"><%= myLists[key].name %></a><br />
-            <% }) %>
-        <% }  else  { %>
-            - No lists -
-        <% } %> 
-        <br /><a href="/dashboard/newlist"><b>Create a new List</b></a>
+    <%- include('partials/account') %>
+    <%- include('partials/navbar') %>
+    <h1>Hi <%= user.name %>!</h1>
+    <div class="page-container">
+        <div class="main-container left">
+            <header>
+                <h1 class="page">My Lists</h1>
+                <button onclick="window.location.href = '/dashboard/newlist';" class="small" style="margin-top: 12px;">+ New List</button>
+            </header>
+            
+            <% if(Object.keys(myLists).length > 0) { %>
+                <% Object.keys(myLists).forEach(function(key) { %>
+                    <div class="list-item dashboard">
+                        <div class="image-container dashboard" tabindex="0" onclick="window.location.href = '/dashboard/list/<%= key %>';">
+                            <% for (var i = 0; i < 4; i++) { %>
+                                <% if (myLists[key].pictures[i]) { %>
+                                    <img class="small" src="<%= myLists[key].pictures[i] %>">
+                                <% } else { %>
+                                    <img class="small" src="/no-picture-small.jpg">
+                                <% } %>
+                            <% } %>
+                        </div>
+                        <div class="dashboard-name"><%= myLists[key].name %></div>
+                        <% if(myLists[key].description != null) { %> <div class="dashboard-description"><%= myLists[key].description %></div> <% } %>
+                    </div>
+                <% }) %>
+            <% }  else  { %>
+                - No lists -
+            <% } %> 
+        </div>
+        <div class="main-container left">
+            <header>
+                <h1 class="page">Saved Lists</h1>
+            </header>
+            
+            <% if(Object.keys(favoriteLists).length > 0) { %>
+                <% Object.keys(favoriteLists).forEach(function(key) { %>
+                    <div class="list-item dashboard" tabindex="0" onclick="window.location.href = '/list/<%= key %>';">
+                        <div class="image-container">
+                            <% if (favoriteLists[key].picture != null) { %>
+                                <img src="<%= favoriteLists[key].picture %>">
+                            <% } else { %>
+                                <img src="/no-user-icon.png">
+                            <% } %>
+                        </div>
+                        <div class="dashboard-name"><%= favoriteLists[key].name %></div>
+                        <% if(favoriteLists[key].description != null) { %> <div class="dashboard-description"><%= favoriteLists[key].description %></div> <% } %>
+                    </div>
+                <% }) %>
+            <% }  else  { %>
+                - No lists -
+            <% } %> 
+        </div>
+    </div>
+
+    
     <h2>Favorited Lists</h2>
         <% if(Object.keys(favoriteLists).length > 0) { %>
             <% Object.keys(favoriteLists).forEach(function(key) { %>

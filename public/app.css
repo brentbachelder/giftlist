@@ -5,6 +5,8 @@ body {
     --main-hover: #54bba1;
     --text: #121212;
     --text-hover: #999999;
+
+    --picture-width: min(calc((100% - 16px) / 2), 248px);
 }
 
 .form-container { display: flex; flex-direction: column; gap: 8px; }
@@ -17,6 +19,12 @@ a:hover { color: var(--text-hover); }
 button { width: 100%; display: flex; justify-content: center; align-items: center; padding: 12px; border: 0; border-radius: 20px;
     background-color: var(--main); color: #ffffff; font-size: 16px; font-weight: 700; }
 button:hover { cursor: pointer; background-color: var(--main-hover); }
+button.small { width: 120px; min-width: 120px; height: 28px; padding: 0 16px; margin: 0 8px; background-color: #ffffff; color: var(--text); border: 1px solid var(--text); 
+    border-radius: 4px; font-size: 13px; font-weight: 500; text-transform: uppercase; }
+button.small.saved { background-color: var(--main); color: #ffffff; }
+button.small:hover { cursor: pointer; background-color: #dddddd; }
+button.small.saved:hover { cursor: pointer; background-color: var(--main-hover); }
+button.small .material-symbols-outlined { padding-right: 6px; font-size: 18px; }
 button.inverse { background-color: #ffffff; color: var(--main); width: auto; }
 button.inverse:hover { color: var(--main-hover); }
 
@@ -24,9 +32,10 @@ button.inverse:hover { color: var(--main-hover); }
 .reglog { width: 100%; max-width: 476px; height: 665px; padding: 32px; background-color: #ffffff; border-radius: 4px; display: flex; 
     flex-direction: column; align-items: center; }
 
-header { height: 48px; width: 100%; display: flex; justify-content: space-between; align-items: top; }
-h1 { text-align: center; font-size: 24px; font-weight: 900; margin: 0; }
-.header-description { width: 100%; font-size: 14px; font-weight: 400; margin: -16px 0 16px 0; }
+header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+h1 { flex-grow: 1; text-align: center; font-size: 24px; font-weight: 900; margin: 0; }
+h1.page { text-align: left; }
+.header-description { width: 100%; font-size: 14px; font-weight: 400; text-align: left; }
 .cancel-back { width: 60px; font-size: 16px; font-weight: 400; color: var(--text); text-decoration: none; margin: 0; padding: 0; }
 .cancel-back:not(.no-hover):hover { cursor: pointer; color: var(--main-hover); }
 
@@ -63,14 +72,17 @@ a.signup:hover { color: var(--main-hover); }
 .terms { width: 100%; font-size: 14px; font-weight: 400; line-height: 24px; padding: 16px; text-align: center; }
 
 .page-container { width: 100vw; display: flex; flex-direction: column; align-items: center; }
-.main-container { width: 100%; max-width: 1024px; font-size: min(calc(100% / 64), calc(1024px / 64)); display: flex; flex-wrap: wrap; margin: 8px 0; justify-content: center; }
+.main-container { width: 100%; max-width: 1024px; display: flex; flex-wrap: wrap; margin: 8px 0; justify-content: center; }
+.main-container.left { justify-content: flex-start; }
 .main-container > header, .main-container > .header-description { margin-left: 16px; }
 
 
-.list-item { width: calc((100% - 16px) / 2); max-width: 248px; margin: 4px; border: 1px solid var(--text-hover); border-radius: 8px; display: flex;
+.list-item { width: var(--picture-width); margin: 4px; border: 1px solid var(--text-hover); border-radius: 8px; display: flex;
     flex-direction: column; align-items: center; }
-    .list-item > .image-container { position: relative; }
-        .list-item > .image-container > img { width: auto; height: auto; max-width: 100%; max-height: 300px; border-radius: 8px; }
+    .list-item > .image-container { position: relative; width: 100%; height: calc(var(--picture-width) * 1.2); min-height: calc(var(--picture-width) * 1.2); 
+        max-height: calc(var(--picture-width) * 1.2); display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
+        .list-item > .image-container > img { width: auto; height: auto; max-width: 100%; max-height: 100%; border-radius: 8px; }
+        .list-item > .image-container > img.small { max-width: calc(50% - 4px); max-height: calc(50% - 4px); border-radius: 4px; }
     .list-item > .name { width: 100%; height: 40px; margin-top: 8px; padding: 0 4px; text-align: left; font-size: 14px; font-weight: 400; line-height: 20px; 
         text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; }
     .list-item > .price-link { width: 100%; display: flex; height: 25px; padding: 0 8px; align-items: center; }
@@ -78,18 +90,38 @@ a.signup:hover { color: var(--main-hover); }
     .list-item > .price-link > .link { font-size: 14px; font-weight: 400; }
     .list-item > .description { width: 100%; margin: 8px 0; padding: 0 8px; display: flex; flex-wrap: wrap; font-size: 12px; font-weight: 400; line-height: 20px; }
         .list-item > .description > .details { width: 100%; min-height: 40px; padding: 0 16px; }
-    .list-item .material-symbols-sharp { font-size: 14px; margin-top: -3px; }
+    /*.list-item .material-symbols-outlined { font-size: 14px; margin-top: -3px; }*/
     .reserve-status { position: absolute; max-width: calc(100% - 16px); right: 8px; top: 8px; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; 
-        border: 1px solid var(--text-hover); background-color: #ffffff; color: var(--text); flex-wrap: wrap; justify-content: center; }
+        border: 1px solid var(--text-hover); background-color: #ffffff; color: var(--text); flex-wrap: wrap; justify-content: flex-start; }
     .reserve-status:not(.taken):hover { cursor: pointer; background-color: #dddddd; }
     .reserve-status.taken { right: auto; top: auto; left: 8px; bottom: 8px; background-color: var(--main); color: #ffffff; }
-    .reserve-overlay-text { padding-left: 8px; font-size: 14px; font-weight: 500; }
-    .reserve-overlay-text.remove { text-decoration: underline; color: #dddddd; }
+    .reserve-overlay-text { font-size: 14px; font-weight: 500; display: flex; align-items: center; }
+    .reserve-overlay-text.remove { text-decoration: underline; color: #dddddd; padding-left: 8px; }
     .reserve-overlay-text.remove:hover { cursor: pointer; color: #bbbbbb; }
+    .reserve-overlay-text .material-symbols-outlined { font-size: 16px; margin-top: -3px; padding-right: 8px; }
 
+.creator-list-item-container { width: 100%; display: flex; margin: 4px; border: 1px solid var(--text-hover); border-radius: 8px; height: 150px; }
+.creator-list-picture-container { margin: 8px; display: flex; justify-content: center; align-items: center; }
+    .creator-list-picture-container > img { width: auto; height: auto; max-height: 134px; max-width: 134px; }
+.creator-list-details { flex-grow: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; margin: 0 8px; }
+    .creator-list-details .name { font-size: 24px; font-weight: 700; color: var(--main); }
+    .creator-list-details .description { display: flex; flex-wrap: wrap; column-gap: 16px; line-height: 20px; }
+    .creator-list-price-link { width: 100%; display: flex; flex-wrap: wrap; height: 25px; font-size: 16px; line-height: 20px; column-gap: 16px; margin-top: 16px; }
+        .creator-list-price-link a { font-size: 16px; line-height: 22px; margin: 0; display: flex; align-items: flex-start;  }
+        .creator-list-price-link a .material-symbols-outlined { font-size: 16px; }
+
+.image-container.dashboard:hover { cursor: pointer;}
+.dashboard-name { height: 60px; padding: 8px 4px 4px 4px; font-size: 18px; font-weight: 700; line-height: 24px; text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; 
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; width: 100%; text-align: center; }
+.dashboard-description { height: 36px; margin: 8px; font-size: 14px; font-weight: 400; line-height: 18px; text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; 
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; width: 100%; text-align: left; padding: 0 8px; }
 
 
 @media(max-width: 476px) {
+    .main-container.left { justify-content: center; }
     .reglog { height: 100vh; border-radius: 0; }
     #account > .reglog { height: auto; width: calc(100vw - 32px); border-radius: 8px; }
+    .reserve-overlay-text, .creator-list-details .description { font-size: 12px; line-height: 16px; }
+    .creator-list-price-link, .creator-list-price-link a { font-size: 12px; line-height: 16px; }
+    .creator-list-price-link a .material-symbols-outlined { font-size: 12px; }
 }

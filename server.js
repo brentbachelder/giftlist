@@ -33,7 +33,7 @@ const initializePassport = require('./passport-config')
 initializePassport(passport, db)
 
 const oneDay = 1000 * 60 * 60 * 24;
-var list = {}, gifts = {}
+var list = {}, gifts = {}, myLists = {}, favoriteLists = {}
 
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded({ extended : false }))
@@ -85,8 +85,9 @@ app.delete('/logout', (req, res, next) => {
     })
 })
 
-app.get('/dashboard', checkAuthenticated, getMyLists, getMyFavorites, (req, res) => {
-    res.render('dashboard.ejs', { name: req.user.name, myLists: req.myLists, favoriteLists: req.favoriteLists })
+app.get('/dashboard', checkAuthenticated, getMyLists, getMyListsPictures, getMyFavorites, getMyFavoritesPictures, (req, res) => {
+    //console.log(favoriteLists)
+    res.render('dashboard.ejs', { myLists: myLists, favoriteLists: favoriteLists })
 });
 
 app.post('/dashboard', checkAuthenticated, findList)
@@ -243,14 +244,58 @@ function getMyLists(req, res, next) {
     })
 }
 
+// Get the first four pictures from gifts on the list
+function getMyListsPictures(req, res, next) {
+    myLists = {};
+    if(Object.keys(req.myLists).length > 0) {
+        var counter = 0;
+        Object.keys(req.myLists).forEach(key => {
+            myLists[req.myLists[key].id] = { name: req.myLists[key].name, description: req.myLists[key].description }
+            db.query("SELECT picture FROM gifts WHERE list = ? AND picture IS NOT NULL LIMIT 4", [req.myLists[key].id], function(err, data) {
+                if(err) console.log(err);
+                if(data.length > 0) {
+                    var pictureArray = [];
+                    for(var i = 0; i < data.length; i++) {
+                        pictureArray.push(data[i].picture);
+                    }
+                    myLists[req.myLists[key].id]["pictures"] = pictureArray;
+                }
+                else myLists[req.myLists[key].id]["pictures"] = [];
+                counter++;
+                if(counter == Object.keys(req.myLists).length) return next()
+            })
+        })
+    }
+    else return next();
+}
+
 // Gets the lists that the user favorited
 function getMyFavorites(req, res, next) {
-    db.query("SELECT id, name FROM lists WHERE id = (SELECT listId FROM member_list WHERE memberId = ?)", [req.user.id], function(err, data) {
+    db.query("SELECT * FROM lists WHERE id IN (SELECT listId FROM member_list WHERE memberId = ?)", [req.user.id], function(err, data) {
         if(err) return res.json(err);
         req.favoriteLists = {}
         req.favoriteLists = data;
         return next();
     })
+}
+
+function getMyFavoritesPictures(req, res, next) {
+    console.log(req.favoriteLists)
+    favoriteLists = {};
+    if(Object.keys(req.favoriteLists).length > 0) {
+        var counter = 0;
+        Object.keys(req.favoriteLists).forEach(key => {
+            console.log("List: " + req.favoriteLists[key].id + " & This is for user " + req.favoriteLists[key].creator)
+            favoriteLists[req.favoriteLists[key].id] = { name: req.favoriteLists[key].name, description: req.favoriteLists[key].description }
+            db.query("SELECT picture FROM members WHERE id = ?", [req.favoriteLists[key].creator], function(err, data) {
+                if(err) console.log(err);
+                favoriteLists[req.favoriteLists[key].id]["picture"] = data[0].picture;
+                counter++;
+                if(counter == Object.keys(req.myLists).length) return next()
+            })
+        })
+    }
+    else return next();
 }
 
 // Go to a list (search function)
@@ -357,7 +402,6 @@ function addRemoveFavoritedList(req, res) {
             const q = "DELETE FROM member_list WHERE memberId = '?' AND listId = '?'"
             db.query(q, [req.user.id, list.id], (err, data) => {
                 if(err) return res.json(err);
-                console.log("Changed favorited list : " + list.isSaved);
             })
         }
         else {
@@ -366,7 +410,6 @@ function addRemoveFavoritedList(req, res) {
             const values = [req.user.id, list.id]
             db.query(q, [values], (err, data) => {
                 if(err) return res.json(err);
-                console.log("Changed favorited list : " + list.isSaved);
             })
         }
     } catch(e) {
