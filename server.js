@@ -86,7 +86,6 @@ app.delete('/logout', (req, res, next) => {
 })
 
 app.get('/dashboard', checkAuthenticated, getMyLists, getMyListsPictures, getMyFavorites, getMyFavoritesPictures, (req, res) => {
-    //console.log(favoriteLists)
     res.render('dashboard.ejs', { myLists: myLists, favoriteLists: favoriteLists })
 });
 
@@ -94,11 +93,11 @@ app.post('/dashboard', checkAuthenticated, findList)
 
 app.post('/dashboard/updatesettings', checkAuthenticated, updateUserInfo)
 
-app.get('/dashboard/newlist', checkAuthenticated, (req, res) => {
-    res.render('newList.ejs')
-})
-
 app.post('/dashboard/newlist', checkAuthenticated, createNewList)
+
+app.delete('/dashboard/list/:id/deletelist', checkAuthenticated, deleteList, deleteGiftsFromList, deleteListMemberList, (req, res) => {
+    res.redirect('/dashboard/')
+})
 
 app.get('/dashboard/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = true; return next(); }, getListInfo, getGifts, (req, res) => {
     res.render('creatorList.ejs', { list: list, gifts: gifts })
@@ -121,6 +120,8 @@ app.get('/dashboard/list/:id/newgift', checkAuthenticated, checkIfCreator, (req,
 })
 
 app.post('/dashboard/list/:id/newgift', checkAuthenticated, addGift)
+
+app.post('/dashboard/list/:id/updatelist', checkAuthenticated, updateListName)
 
 app.get('/register/whycreate', checkNotAuthenticated, (req, res) => {
     res.render('whyCreate.ejs')
@@ -189,7 +190,6 @@ async function registerUser(req, res) {
 
         db.query(q, [values], (err, data) => {
             if(err) return res.json(err);
-            console.log(data.insertId);
             console.log("Created user successfully")
             res.redirect('/login')
         })
@@ -201,12 +201,10 @@ async function registerUser(req, res) {
 function updateUserInfo(req, res) {
     try {
         const q = "UPDATE members SET name = ?, email = ?, picture = ? WHERE id = ?";
-        //const path = req.params.path;
-        //console.log(req.params.path)
 
         db.query(q, [req.body.name, req.body.email, req.body.picture, req.user.id], (err, data) => {
             if(err) console.log(err);
-            console.log("Successful")
+            console.log("Successfully updated user req.user.id")
             res.send()
         })
     } catch(e) {
@@ -219,8 +217,8 @@ function createNewList(req, res) {
     try {
         const q = "INSERT INTO lists(`name`, `description`, `creator`) VALUES (?)";
         const values = [
-            req.body.name,
-            req.body.description, 
+            req.body.newname,
+            req.body.newdescription, 
             req.user.id
         ]
 
@@ -229,8 +227,53 @@ function createNewList(req, res) {
             console.log("Created list successfully")
             res.redirect('/dashboard/list/' + data.insertId)
         })
-    } catch {
-        res.redirect('/dashboard/newlist')
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+function deleteList(req, res, next) {
+    try {
+        const listId = req.params.id
+        const q = "DELETE FROM lists WHERE id=?";
+
+        db.query(q, [listId], (err, data) => {
+            if(err) console.log(err);
+            console.log("Deleted list successfully - " + listId)
+            return next()
+        })
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+function deleteGiftsFromList(req, res, next) {
+    try {
+        const listId = req.params.id
+        const q = "DELETE FROM gifts WHERE list=?";
+
+        db.query(q, [listId], (err, data) => {
+            if(err) console.log(err);
+            console.log("Deleted gifts from list successfully - " + listId)
+            return next()
+        })
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+function deleteListMemberList(req, res, next) {
+    try {
+        const listId = req.params.id
+        const q = "DELETE FROM member_list WHERE listId=?";
+
+        db.query(q, [listId], (err, data) => {
+            if(err) console.log(err);
+            console.log("Deleted member_list successfully - " + listId)
+            return next()
+        })
+    } catch(e) {
+        console.log(e);
     }
 }
 
@@ -269,6 +312,18 @@ function getMyListsPictures(req, res, next) {
     else return next();
 }
 
+function updateListName(req, res) {
+    let name = req.body.editname;
+    let description = req.body.editdescription;
+
+    const q = "UPDATE lists SET name = ?, description = ? WHERE id = ?"
+
+    db.query(q, [name, description, parseInt(req.params.id)], (err, data) => {
+        if(err) console.log(err);
+        console.log("Updated List");
+    })
+}
+
 // Gets the lists that the user favorited
 function getMyFavorites(req, res, next) {
     db.query("SELECT * FROM lists WHERE id IN (SELECT listId FROM member_list WHERE memberId = ?)", [req.user.id], function(err, data) {
@@ -280,18 +335,16 @@ function getMyFavorites(req, res, next) {
 }
 
 function getMyFavoritesPictures(req, res, next) {
-    console.log(req.favoriteLists)
     favoriteLists = {};
     if(Object.keys(req.favoriteLists).length > 0) {
         var counter = 0;
         Object.keys(req.favoriteLists).forEach(key => {
-            console.log("List: " + req.favoriteLists[key].id + " & This is for user " + req.favoriteLists[key].creator)
             favoriteLists[req.favoriteLists[key].id] = { name: req.favoriteLists[key].name, description: req.favoriteLists[key].description }
             db.query("SELECT picture FROM members WHERE id = ?", [req.favoriteLists[key].creator], function(err, data) {
                 if(err) console.log(err);
                 favoriteLists[req.favoriteLists[key].id]["picture"] = data[0].picture;
                 counter++;
-                if(counter == Object.keys(req.myLists).length) return next()
+                if(counter == Object.keys(req.favoriteLists).length) return next();
             })
         })
     }
@@ -423,15 +476,14 @@ function reserveGift(userId, giftId, reserve) {
         
         db.query(q, [parseInt(userId), parseInt(giftId)], (err, data) => {
             if(err) console.log(err);
-            console.log("Updated Reservation");
+            console.log("Updated Reservation - true");
         })
     }
     else {
         const q = "UPDATE gifts SET gifter = NULL WHERE id = ?"
-        console.log("False")
         db.query(q, parseInt(giftId), (err, data) => {
             if(err) console.log(err);
-            console.log("Updated Reservation");
+            console.log("Updated Reservation - false");
         })
     }
 }

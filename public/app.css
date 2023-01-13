@@ -14,6 +14,8 @@ body {
 label { font-size: 14px; font-weight: 700; padding: 4px; }
 input { width: 100%; margin: 4px; padding: 9px 16px; border-radius: 8px; font-size: 14px; font-weight: 400; border: 1px solid #cccccc; outline: none; }
 input:focus { border: 1px solid var(--main); }
+textarea { height: 72px; border: 1px solid #cccccc; width: 100%; padding: 9px 16px; font-size: 14px; font-weight: 400; outline: none; border-radius: 8px; line-height: 18px;
+    resize: none; overflow: hidden; }
 a { width: fit-content; height: 25px; font-size: 14px; font-weight: 400; text-decoration: underline; color: var(--text); margin: 4px; }
 a:hover { color: var(--text-hover); }
 button { width: 100%; display: flex; justify-content: center; align-items: center; padding: 12px; border: 0; border-radius: 20px;
@@ -27,10 +29,13 @@ button.small.saved:hover { cursor: pointer; background-color: var(--main-hover);
 button.small .material-symbols-outlined { padding-right: 6px; font-size: 18px; }
 button.inverse { background-color: #ffffff; color: var(--main); width: auto; }
 button.inverse:hover { color: var(--main-hover); }
+img { height: auto; max-width: 100%; border-radius: 8px; }
+img.icon { border-radius: 50%; }
 
 .reglog-container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;}
 .reglog { width: 100%; max-width: 476px; height: 665px; padding: 32px; background-color: #ffffff; border-radius: 4px; display: flex; 
     flex-direction: column; align-items: center; }
+.reglog.small { height: fit-content; }
 
 header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 h1 { flex-grow: 1; text-align: center; font-size: 24px; font-weight: 900; margin: 0; }
@@ -46,10 +51,12 @@ h1.page { text-align: left; }
     #show-password { width: 44px; font-size: 14px; font-weight: 700; color: var(--main); }
     #show-password:hover { cursor: pointer; text-decoration: underline; }
 
-#account { position: absolute; top: 0; left: 0; width: 100vw; height: 0; display: flex; background-color: rgba(0, 0, 0, .8); justify-content: center; overflow: hidden;
-    align-items: center; z-index: 2; white-space: nowrap; transition-duration: .3s; }
+#account, #edit-list, #new-list { position: absolute; top: 0; left: 0; width: 100vw; height: 0; display: flex; background-color: rgba(0, 0, 0, .8); 
+    justify-content: center; overflow: hidden; align-items: center; z-index: 2; white-space: nowrap; transition-duration: .3s; }
 #account.showing { height: 100vh; }
-#account-background { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
+#account-background, #edit-list-background, #new-list-background { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
+#edit-list, #new-list { height: 100vh; display: none; background-color: rgba(0, 0, 0, .5); }
+#edit-list.showing, #new-list.showing { display: flex; }
 .picture-preview { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
     #picture-error { color: darkred; display: none; font-size: 10px; font-weight: 700; padding: 4px; text-transform: uppercase;}
     
@@ -60,10 +67,8 @@ h1.page { text-align: left; }
         .navbar-logo-container:hover { cursor: pointer; }
         .navbar-user-container { display: flex; align-items: center; gap: 16px; padding: 8px; border-radius: 8px; }
             .user-picture { border-radius: 50%; background-size: cover; background-position: center center; }
-            /*.user-picture > img { height: auto; width: auto; min-height: 100%; min-width: 100%; }*/
             .user-name { font-size: 16px; font-weight: 500; color: #ffffff; }
         .navbar-user-container:hover { cursor: pointer; background-color: var(--main-hover); }
-        /*.navbar-user-container:hover .user-name { color: #dddddd; }*/
 
 a.signup { width: 100%; height: 40px; margin: 4px; text-align: center; color: var(--main); align-items: center; font-size: 18px; font-weight: 900; text-decoration: none; }
 a.signup:hover { color: var(--main-hover); }
@@ -79,9 +84,10 @@ a.signup:hover { color: var(--main-hover); }
 
 .list-item { width: var(--picture-width); margin: 4px; border: 1px solid var(--text-hover); border-radius: 8px; display: flex;
     flex-direction: column; align-items: center; }
+.list-item.hov:hover { cursor: pointer; background-color: #dddddd; }
+.list-item.dashboard { padding-top: 24px; }
     .list-item > .image-container { position: relative; width: 100%; height: calc(var(--picture-width) * 1.2); min-height: calc(var(--picture-width) * 1.2); 
-        max-height: calc(var(--picture-width) * 1.2); display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
-        .list-item > .image-container > img { width: auto; height: auto; max-width: 100%; max-height: 100%; border-radius: 8px; }
+        max-height: calc(var(--picture-width) * 1.2); max-height: calc(var(--picture-width) * 1.2); display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
         .list-item > .image-container > img.small { max-width: calc(50% - 4px); max-height: calc(50% - 4px); border-radius: 4px; }
     .list-item > .name { width: 100%; height: 40px; margin-top: 8px; padding: 0 4px; text-align: left; font-size: 14px; font-weight: 400; line-height: 20px; 
         text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; }
@@ -101,8 +107,7 @@ a.signup:hover { color: var(--main-hover); }
     .reserve-overlay-text .material-symbols-outlined { font-size: 16px; margin-top: -3px; padding-right: 8px; }
 
 .creator-list-item-container { width: 100%; display: flex; margin: 4px; border: 1px solid var(--text-hover); border-radius: 8px; height: 150px; }
-.creator-list-picture-container { margin: 8px; display: flex; justify-content: center; align-items: center; }
-    .creator-list-picture-container > img { width: auto; height: auto; max-height: 134px; max-width: 134px; }
+.creator-list-picture-container { margin: 8px; display: flex; justify-content: center; align-items: center; width: 134px; min-width: 134px; height: 134px; }
 .creator-list-details { flex-grow: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; margin: 0 8px; }
     .creator-list-details .name { font-size: 24px; font-weight: 700; color: var(--main); }
     .creator-list-details .description { display: flex; flex-wrap: wrap; column-gap: 16px; line-height: 20px; }
@@ -112,9 +117,17 @@ a.signup:hover { color: var(--main-hover); }
 
 .image-container.dashboard:hover { cursor: pointer;}
 .dashboard-name { height: 60px; padding: 8px 4px 4px 4px; font-size: 18px; font-weight: 700; line-height: 24px; text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; 
-    -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; width: 100%; text-align: center; }
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; width: 100%; text-align: center; margin-top: 12px; }
 .dashboard-description { height: 36px; margin: 8px; font-size: 14px; font-weight: 400; line-height: 18px; text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; 
     -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; width: 100%; text-align: left; padding: 0 8px; }
+.dashboard-hidden { height: 0; overflow: hidden; white-space: nowrap; }
+.dashboard-edit-delete { display: flex; width: 100%; height: 25px; padding: 12px; justify-content: center; align-items: center; font-size: 14px; font-weight: 700; gap: 32px; }
+.dashboard-edit-delete > div:hover { cursor: pointer; text-decoration: underline; }
+#create-list-container:hover { background-color: #cccccc; cursor: pointer; }
+.overlay { width: 100vw; height: 100vh; display: none; justify-content: center; align-items: center; position: absolute; top: 0; left: 0; background-color: rgba(0, 0, 0, .5); }
+    .overlay-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
+    .overlay.showing { display: flex; }
+    .overlay.showing .reglog { height: fit-content; }
 
 
 @media(max-width: 476px) {

@@ -1,0 +1,38 @@
+<div id="new-list">
+    <div id="new-list-background" onclick="document.getElementById('new-list').classList.remove('showing');"></div>
+    <div class="reglog small">
+        <header>
+            <div class="cancel-back" onclick="document.getElementById('new-list').classList.remove('showing');">
+                <svg width="24" height="24"><path d="M3.281 12.822l5.383 6.258c.437.428.45 1.135.027 1.579a1.09 1.09 0 01-1.557.028L.336 12.929A1.128 1.128 0 01.31 11.35l6.796-8.009a1.092 1.092 0 011.558-.028c.437.429.45 1.136.027 1.58l-5.42 6.473a1.126 1.126 0 00.01 1.456z"></path></svg>
+            </div>
+            <h1>Create New List</h1>
+            <div class="cancel-back no-hover"></div>
+        </header>
+        <div style="width: 100%;">    
+            <form method="POST" action="/dashboard/newlist" id="new-list-form">
+                <div class="form-container">
+                    <div class="input-container">
+                        <label for="newname">Name</label>
+                        <input type="text" id="newname" name="newname" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="newdescription">Description</label>
+                        <textarea id="newdescription" name="newdescription"></textarea>
+                    </div>
+                    <button style="margin-top: 16px;" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<iframe name="hiddenNewListFrame" style="display: none;"></iframe>
+
+<script>
+    function submitNewList() {
+        if(document.getElementById('newname').value != '') {
+            document.getElementById('dashboard-name-' + currentList).innerText = document.getElementById('editname').value;
+            document.getElementById('dashboard-description-' + currentList).innerText = document.getElementById('editdescription').value;
+            document.getElementById('edit-list').classList.remove('showing');
+        }
+    }
+</script>
