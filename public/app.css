@@ -1,21 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amaranth:wght@700&family=Roboto:wght@400;500;700&display=swap');
 * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
 body { 
-    --main: #00a87e;
-    --main-hover: #54bba1;
+    --main: #008fa8;
+    --main-hover: #39a7bb;
     --text: #121212;
     --text-hover: #999999;
 
     --picture-width: min(calc((100% - 16px) / 2), 248px);
 }
 
-.form-container { display: flex; flex-direction: column; gap: 8px; }
+.form-container { display: flex; flex-direction: column; gap: 8px; transition-duration: .3s; overflow: hidden; white-space: nowrap; }
+.form-container.closed { height: 0; }
 .input-container { width: 100%; display: flex; flex-direction: column; }
 label { font-size: 14px; font-weight: 700; padding: 4px; }
-input { width: 100%; margin: 4px; padding: 9px 16px; border-radius: 8px; font-size: 14px; font-weight: 400; border: 1px solid #cccccc; outline: none; }
-input:focus { border: 1px solid var(--main); }
+input { width: calc(100% - 8px); margin: 4px; padding: 9px 16px; border-radius: 8px; font-size: 14px; font-weight: 400; border: 1px solid #cccccc; outline: none; }
+input.small { width: calc(33% - 6px); }
 textarea { height: 72px; border: 1px solid #cccccc; width: 100%; padding: 9px 16px; font-size: 14px; font-weight: 400; outline: none; border-radius: 8px; line-height: 18px;
     resize: none; overflow: hidden; }
+input:focus, textarea:focus { border: 1px solid var(--main); }
 a { width: fit-content; height: 25px; font-size: 14px; font-weight: 400; text-decoration: underline; color: var(--text); margin: 4px; }
 a:hover { color: var(--text-hover); }
 button { width: 100%; display: flex; justify-content: center; align-items: center; padding: 12px; border: 0; border-radius: 20px;
@@ -38,37 +40,42 @@ img.icon { border-radius: 50%; }
 .reglog.small { height: fit-content; }
 
 header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-h1 { flex-grow: 1; text-align: center; font-size: 24px; font-weight: 900; margin: 0; }
+h1 { flex-grow: 1; text-align: center; font-size: 24px; font-weight: 700; font-family: 'Amaranth', sans-serif; margin: 0; }
 h1.page { text-align: left; }
 .header-description { width: 100%; font-size: 14px; font-weight: 400; text-align: left; }
-.cancel-back { width: 60px; font-size: 16px; font-weight: 400; color: var(--text); text-decoration: none; margin: 0; padding: 0; }
+.cancel-back { width: 60px; font-size: 16px; font-weight: 500; color: var(--text); text-decoration: none; margin: 0; padding: 0; }
 .cancel-back:not(.no-hover):hover { cursor: pointer; color: var(--main-hover); }
 
 .logo-container { height: 40px; margin: 16px 0 32px 0; display: flex; justify-content: center; align-items: center; }
+    .inner { font-family: 'Amaranth', sans-serif; font-size: 30px; font-weight: 700; color: var(--main); }
 .password-container { width: 100%; border-radius: 8px; border: 1px solid #cccccc; display: flex; align-items: center; padding-right: 16px; }
     .password-container > input { flex-grow: 1; border: 0; outline: none; margin: 0; }
     .password-container:focus-within { border: 1px solid var(--main); }
     #show-password { width: 44px; font-size: 14px; font-weight: 700; color: var(--main); }
     #show-password:hover { cursor: pointer; text-decoration: underline; }
 
-#account, #edit-list, #new-list { position: absolute; top: 0; left: 0; width: 100vw; height: 0; display: flex; background-color: rgba(0, 0, 0, .8); 
+#account, #edit-list, #new-list, #new-gift, #edit-gift { position: absolute; top: 0; left: 0; width: 100vw; height: 0; display: flex; background-color: rgba(0, 0, 0, .8); 
     justify-content: center; overflow: hidden; align-items: center; z-index: 2; white-space: nowrap; transition-duration: .3s; }
 #account.showing { height: 100vh; }
-#account-background, #edit-list-background, #new-list-background { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
-#edit-list, #new-list { height: 100vh; display: none; background-color: rgba(0, 0, 0, .5); }
-#edit-list.showing, #new-list.showing { display: flex; }
+#account-background, #edit-list-background, #new-list-background, #new-gift-background, #edit-gift-background { position: absolute; top: 0; left: 0; width: 100vw; 
+    height: 100vh; z-index: -1; }
+#edit-list, #new-list, #new-gift, #edit-gift { height: 100vh; display: none; background-color: rgba(0, 0, 0, .5); }
+#edit-list.showing, #new-list.showing, #new-gift.showing, #edit-gift.showing { display: flex; }
 .picture-preview { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
     #picture-error { color: darkred; display: none; font-size: 10px; font-weight: 700; padding: 4px; text-transform: uppercase;}
     
 
 #navbar { width: 100%; height: 60px; background-color: var(--main); margin-bottom: 24px; display: flex; justify-content: center; }
     .navbar-container { width: 100%; height: 100%; max-width: 1024px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar-logo-container { font-size: 40px; font-weight: 900; color: #ffffff; }
+        .navbar-logo-container { font-size: 34px; font-family: 'Amaranth', sans-serif; font-weight: 700; color: #ffffff; }
         .navbar-logo-container:hover { cursor: pointer; }
         .navbar-user-container { display: flex; align-items: center; gap: 16px; padding: 8px; border-radius: 8px; }
             .user-picture { border-radius: 50%; background-size: cover; background-position: center center; }
             .user-name { font-size: 16px; font-weight: 500; color: #ffffff; }
         .navbar-user-container:hover { cursor: pointer; background-color: var(--main-hover); }
+        .navbar-signin { padding: 4px 8px; font-size: 16px; font-weight: 500; color: var(--main); text-decoration: none; }
+            .navbar-signin:hover { cursor: pointer; text-decoration: underline; color: var(--main-hover); }
+#index-main { width: 100%; height: 420px; background-color: var(--main); display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
 a.signup { width: 100%; height: 40px; margin: 4px; text-align: center; color: var(--main); align-items: center; font-size: 18px; font-weight: 900; text-decoration: none; }
 a.signup:hover { color: var(--main-hover); }
@@ -109,20 +116,21 @@ a.signup:hover { color: var(--main-hover); }
 .creator-list-item-container { width: 100%; display: flex; margin: 4px; border: 1px solid var(--text-hover); border-radius: 8px; height: 150px; }
 .creator-list-picture-container { margin: 8px; display: flex; justify-content: center; align-items: center; width: 134px; min-width: 134px; height: 134px; }
 .creator-list-details { flex-grow: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; margin: 0 8px; }
-    .creator-list-details .name { font-size: 24px; font-weight: 700; color: var(--main); }
+    .creator-list-details .name { font-size: 24px; font-weight: 700; font-family: 'Amaranth', sans-serif; color: var(--main); padding-bottom: 8px; }
     .creator-list-details .description { display: flex; flex-wrap: wrap; column-gap: 16px; line-height: 20px; }
     .creator-list-price-link { width: 100%; display: flex; flex-wrap: wrap; height: 25px; font-size: 16px; line-height: 20px; column-gap: 16px; margin-top: 16px; }
-        .creator-list-price-link a { font-size: 16px; line-height: 22px; margin: 0; display: flex; align-items: flex-start;  }
-        .creator-list-price-link a .material-symbols-outlined { font-size: 16px; }
+        .creator-list-price-link .edit { font-size: 14px; line-height: 18px; margin: 0; display: flex; align-items: flex-start; color: var(--main);  }
+        .creator-list-price-link .edit .material-symbols-outlined { font-size: 14px; }
+        .creator-list-price-link .edit:hover { cursor: pointer; color: #aaaaaa; }
 
 .image-container.dashboard:hover { cursor: pointer;}
-.dashboard-name { height: 60px; padding: 8px 4px 4px 4px; font-size: 18px; font-weight: 700; line-height: 24px; text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; 
-    -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; width: 100%; text-align: center; margin-top: 12px; }
+.dashboard-name { height: 60px; padding: 8px 4px 4px 4px; font-size: 20px; font-weight: 700; line-height: 24px; text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; 
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; width: 100%; text-align: center; margin-top: 12px; font-family: 'Amaranth', sans-serif; }
 .dashboard-description { height: 36px; margin: 8px; font-size: 14px; font-weight: 400; line-height: 18px; text-overflow:ellipsis; overflow: hidden; display: -webkit-box !important; 
     -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; width: 100%; text-align: left; padding: 0 8px; }
 .dashboard-hidden { height: 0; overflow: hidden; white-space: nowrap; }
 .dashboard-edit-delete { display: flex; width: 100%; height: 25px; padding: 12px; justify-content: center; align-items: center; font-size: 14px; font-weight: 700; gap: 32px; }
-.dashboard-edit-delete > div:hover { cursor: pointer; text-decoration: underline; }
+.dashboard-edit-delete div:hover { cursor: pointer; text-decoration: underline; }
 #create-list-container:hover { background-color: #cccccc; cursor: pointer; }
 .overlay { width: 100vw; height: 100vh; display: none; justify-content: center; align-items: center; position: absolute; top: 0; left: 0; background-color: rgba(0, 0, 0, .5); }
     .overlay-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
@@ -131,10 +139,12 @@ a.signup:hover { color: var(--main-hover); }
 
 
 @media(max-width: 476px) {
+    .navbar-logo-container { font-size: 24px; }
     .main-container.left { justify-content: center; }
     .reglog { height: 100vh; border-radius: 0; }
     #account > .reglog { height: auto; width: calc(100vw - 32px); border-radius: 8px; }
     .reserve-overlay-text, .creator-list-details .description { font-size: 12px; line-height: 16px; }
-    .creator-list-price-link, .creator-list-price-link a { font-size: 12px; line-height: 16px; }
-    .creator-list-price-link a .material-symbols-outlined { font-size: 12px; }
+    .creator-list-price-link { flex-wrap: nowrap; }
+    .creator-list-price-link, .creator-list-price-link a, .creator-list-price-link .edit { font-size: 12px; line-height: 16px; }
+    .creator-list-price-link a .material-symbols-outlined, .creator-list-price-link .edit { font-size: 12px; }
 }

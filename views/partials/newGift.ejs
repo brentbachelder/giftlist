@@ -1,0 +1,87 @@
+<div id="new-gift">
+    <div id="new-gift-background" onclick="resetNewGift()"></div>
+    <div class="reglog small">
+        <header>
+            <div class="cancel-back" id="cancel-back" onclick="changePageBack()" style="display: none;">
+                <svg width="24" height="24"><path d="M3.281 12.822l5.383 6.258c.437.428.45 1.135.027 1.579a1.09 1.09 0 01-1.557.028L.336 12.929A1.128 1.128 0 01.31 11.35l6.796-8.009a1.092 1.092 0 011.558-.028c.437.429.45 1.136.027 1.58l-5.42 6.473a1.126 1.126 0 00.01 1.456z"></path></svg>
+            </div>
+            <h1>Create New Gift</h1>
+            <div class="cancel-back" id="cancel-button" onclick="resetNewGift()">Cancel</div>
+        </header>
+        <div style="width: 100%;">    
+            <form method="POST" action="/dashboard/list/<%= list.id %>/newgift" id="new-gift-form">
+                <div id="new-gift-1" class="form-container">
+                    <div class="input-container">
+                        <label for="title">What is the Gift? (required)</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div style="display: flex; gap: 16px;">
+                        <div class="input-container">
+                            <label for="price">Price?</label>
+                            <input type="number" id="price" name="price">
+                        </div>
+                        <div class="input-container">
+                            <label for="size">Size?</label>
+                            <input type="text" id="size" name="size">
+                        </div>
+                        <div class="input-container">
+                            <label for="color">Color?</label>
+                            <input type="text" id="color" name="color">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="details">Any extra details?</label>
+                        <textarea id="details" name="details"></textarea>
+                    </div>
+                    <button type="button" style="margin-top: 16px;" onclick="changePageForward()">Next</button>
+                </div>
+                <div id="new-gift-2" class="form-container closed">
+                    <div class="input-container">
+                        <label for="link">Is it available online? (link)</label>
+                        <input type="text" id="link" name="link" maxlength="254">
+                    </div>
+                    <div class="input-container">
+                        <label for="picture">Is there a picture online? (link)</label>
+                        <input type="text" id="picture" name="picture" maxlength="254">
+                    </div>
+                    <div style="width: 100%; text-align: right;">
+                        <a href="https://www.lifewire.com/copy-image-web-address-url-1174175" target="_blank">How do I add a picture link?</a>
+                    </div>
+                    <button style="margin-top: 16px;" type="submit" id="submit-button">Add Gift</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changePageForward() {
+        var validName = document.getElementById('title').checkValidity();
+        if(validName) {
+            document.getElementById('new-gift-1').classList.add('closed');
+            document.getElementById('new-gift-2').classList.remove('closed');
+            document.getElementById('cancel-button').style.display = "none";
+            document.getElementById('cancel-back').style.display = "block";
+        }
+        else document.getElementById('submit-button').click();
+    }
+
+    function changePageBack() {
+        document.getElementById('new-gift-1').classList.remove('closed');
+        document.getElementById('new-gift-2').classList.add('closed');
+        document.getElementById('cancel-button').style.display = "block";
+        document.getElementById('cancel-back').style.display = "none";
+    }
+
+    function resetNewGift() {
+        changePageBack();
+        document.getElementById('title').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('size').value = '';
+        document.getElementById('color').value = '';
+        document.getElementById('details').value = '';
+        document.getElementById('link').value = '';
+        document.getElementById('picture').value = '';
+        document.getElementById('new-gift').classList.remove('showing');
+    }
+</script>

@@ -95,6 +95,8 @@ app.post('/dashboard/updatesettings', checkAuthenticated, updateUserInfo)
 
 app.post('/dashboard/newlist', checkAuthenticated, createNewList)
 
+app.post('/dashboard/list/:id/updatelist', checkAuthenticated, updateListName)
+
 app.delete('/dashboard/list/:id/deletelist', checkAuthenticated, deleteList, deleteGiftsFromList, deleteListMemberList, (req, res) => {
     res.redirect('/dashboard/')
 })
@@ -102,6 +104,10 @@ app.delete('/dashboard/list/:id/deletelist', checkAuthenticated, deleteList, del
 app.get('/dashboard/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = true; return next(); }, getListInfo, getGifts, (req, res) => {
     res.render('creatorList.ejs', { list: list, gifts: gifts })
 })
+
+app.post('/dashboard/list/:id/newgift', checkAuthenticated, addGift)
+
+app.post('/dashboard/list/:id/editgift', checkAuthenticated, editGift)
 
 app.get('/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = false; return next(); }, getListInfo, checkIfSaved, getGifts, getGifterName, (req, res) => {
     res.render('list.ejs', { user: req.user, list: list, gifts: gifts })
@@ -115,13 +121,9 @@ app.put('/list/:id', checkAuthenticated, (req, res) => {
     reserveGift(req.user.id, giftId, reserve)
 })
 
-app.get('/dashboard/list/:id/newgift', checkAuthenticated, checkIfCreator, (req, res) => {
+/*app.get('/dashboard/list/:id/newgift', checkAuthenticated, checkIfCreator, (req, res) => {
     res.render('newGift.ejs', { listId: list.id })
-})
-
-app.post('/dashboard/list/:id/newgift', checkAuthenticated, addGift)
-
-app.post('/dashboard/list/:id/updatelist', checkAuthenticated, updateListName)
+})*/
 
 app.get('/register/whycreate', checkNotAuthenticated, (req, res) => {
     res.render('whyCreate.ejs')
@@ -164,7 +166,7 @@ function checkNotAuthenticated(req, res, next) {
     next()
 }
 
-function checkIfCreator(req, res, next) {
+/*function checkIfCreator(req, res, next) {
     db.query("SELECT creator FROM lists WHERE id = ?", [req.params.id], function(err, data) {
         if(err) return res.json(err);
         if(data[0].creator == req.user.id)  {
@@ -173,7 +175,7 @@ function checkIfCreator(req, res, next) {
         }
         else res.redirect('/list/' + req.params.id)
     })
-}
+}*/
 
 // Register a new user
 async function registerUser(req, res) {
@@ -422,19 +424,30 @@ function getGifterName(req, res, next) {
 
 function addGift(req, res) {
     try {
-        var desc = req.body.description
-        if(desc == '') desc = null
+        var price = req.body.price
+        if(price == '') price = null
+        var size = req.body.size
+        if(size == '') size = null
+        var color = req.body.color
+        if(color == '') color = null
+        var details = req.body.details
+        if(details == '') details = null
         var link = req.body.link
         if(link == '') link = null
-        //var gifter = NULL
+        var picture = req.body.picture
+        if(picture == '') picture = null
         
-        const q = "INSERT INTO gifts(`list`, `gifter`, `title`, `description`, `link`) VALUES (?)";
+        const q = "INSERT INTO gifts(`list`, `gifter`, `title`, `details`, `link`, `size`, `color`, `price`, `picture`) VALUES (?)";
         const values = [
             list.id,
             null,
             req.body.title, 
-            desc, 
-            link
+            details, 
+            link,
+            size,
+            color,
+            price,
+            picture
         ]
 
         db.query(q, [values], (err, data) => {
@@ -444,7 +457,45 @@ function addGift(req, res) {
         })
     } catch(e) {
         console.log(e)
-        res.redirect('/dashboard/list/' + list.id + '/newgift')
+        res.redirect('/dashboard/list/' + list.id)
+    }
+}
+
+function editGift(req, res) {
+    console.log("Editing gift #" + req.query.giftId)
+    try {
+        var price = req.body.editprice
+        if(price == '') price = null
+        var size = req.body.editsize
+        if(size == '') size = null
+        var color = req.body.editcolor
+        if(color == '') color = null
+        var details = req.body.editdetails
+        if(details == '') details = null
+        var link = req.body.editlink
+        if(link == '') link = null
+        var picture = req.body.editpicture
+        if(picture == '') picture = null
+        
+        const q = "UPDATE gifts SET `title` = ?, `details` = ?, `link` = ?, `size` = ?, `color` = ?, `price` = ?, `picture` = ? WHERE id = ?";
+        const values = [
+            req.body.edittitle, 
+            details, 
+            link,
+            size,
+            color,
+            price,
+            picture,
+            req.query.giftId
+        ]
+
+        db.query(q, [req.body.edittitle, details, link, size, color, price, picture, req.query.giftId], (err, data) => {
+            if(err) console.log(err);
+            console.log("Edited gift successfully")
+        })
+    } catch(e) {
+        console.log(e)
+        res.redirect('/dashboard/list/' + list.id)
     }
 }
 

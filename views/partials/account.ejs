@@ -22,7 +22,7 @@
                     <div class="input-container">
                         <label for="picture-fake">Picture Link</label>
                         <input type="text" id="picture-fake" name="picture-fake" onpaste="setTimeout(() => {this.blur()}, 4);" onblur="imageExists(this.value)" 
-                            onkeypress="if(event.keyCode==13) { event.preventDefault(); this.blur(); }" value="<%= user.picture %>">
+                            onkeypress="if(event.keyCode==13) { event.preventDefault(); this.blur(); }" value="<%= user.picture %>" maxlength="254">
                         <input type="hidden" id="picture" name="picture" value="<%= user.picture %>">
                     </div>
                     <% if(user.picture == null || user.picture == '') { %>

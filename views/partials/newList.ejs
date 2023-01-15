@@ -26,13 +26,3 @@
     </div>
 </div>
 <iframe name="hiddenNewListFrame" style="display: none;"></iframe>
-
-<script>
-    function submitNewList() {
-        if(document.getElementById('newname').value != '') {
-            document.getElementById('dashboard-name-' + currentList).innerText = document.getElementById('editname').value;
-            document.getElementById('dashboard-description-' + currentList).innerText = document.getElementById('editdescription').value;
-            document.getElementById('edit-list').classList.remove('showing');
-        }
-    }
-</script>

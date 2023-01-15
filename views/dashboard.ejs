@@ -5,14 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/app.css">
-    <title>Gift List App</title>
+    <title>Once Upon a Wishlist</title>
 </head>
 <body>
     <%- include('partials/account') %>
     <%- include('partials/navbar') %>
     <%- include('partials/editList') %>
     <%- include('partials/newList') %>
-    <h1>Hi <%= user.name %>!</h1>
     <div class="page-container">
         <div class="main-container">
             <header>
@@ -35,7 +34,7 @@
                         <div class="dashboard-name" id="dashboard-name-<%= key %>"><%= myLists[key].name %></div>
                         <div class="dashboard-hidden" id="dashboard-description-<%= key %>"><%= myLists[key].description %></div>
                         <div class="dashboard-edit-delete">
-                            <div style="color: var(--main);" tabindex="0" onclick="editList(`<%= key %>`);">Edit</div>
+                            <div style="color: var(--main);" tabindex="0" onclick="editList(`<%= key %>`);">Edit Name</div>
                             <form id="delete-list-<%= key %>" action="/dashboard/list/<%= key %>/deletelist?_method=DELETE" method="POST">
                                 <div style="color: darkred;" tabindex="0" onclick="deleteList(`<%= key %>`);">Delete</div>
                             </form>

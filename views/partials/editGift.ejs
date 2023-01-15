@@ -1,0 +1,144 @@
+<div id="edit-gift">
+    <div id="edit-gift-background" onclick="resetEditGift()"></div>
+    <div class="reglog small">
+        <header>
+            <div class="cancel-back" id="edit-cancel-back" onclick="changeEditPageBack()" style="display: none;">
+                <svg width="24" height="24"><path d="M3.281 12.822l5.383 6.258c.437.428.45 1.135.027 1.579a1.09 1.09 0 01-1.557.028L.336 12.929A1.128 1.128 0 01.31 11.35l6.796-8.009a1.092 1.092 0 011.558-.028c.437.429.45 1.136.027 1.58l-5.42 6.473a1.126 1.126 0 00.01 1.456z"></path></svg>
+            </div>
+            <h1>Edit Gift</h1>
+            <div class="cancel-back" id="edit-cancel-button" onclick="resetEditGift()">Cancel</div>
+        </header>
+        <div style="width: 100%;">    
+            <form method="POST" target="hiddenEditGiftFrame" id="edit-gift-form">
+                <div id="edit-gift-1" class="form-container">
+                    <div class="input-container">
+                        <label for="edittitle">What is the Gift? (required)</label>
+                        <input type="text" id="edittitle" name="edittitle" required>
+                    </div>
+                    <div style="display: flex; gap: 16px;">
+                        <div class="input-container">
+                            <label for="editprice">Price?</label>
+                            <input type="number" id="editprice" step="0.01" min="0" name="editprice">
+                        </div>
+                        <div class="input-container">
+                            <label for="editsize">Size?</label>
+                            <input type="text" id="editsize" name="editsize">
+                        </div>
+                        <div class="input-container">
+                            <label for="editcolor">Color?</label>
+                            <input type="text" id="editcolor" name="editcolor">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="editdetails">Any extra details?</label>
+                        <textarea id="editdetails" name="editdetails"></textarea>
+                    </div>
+                    <button type="button" style="margin-top: 16px;" onclick="changeEditPageForward()">Next</button>
+                </div>
+                <div id="edit-gift-2" class="form-container closed">
+                    <div class="input-container">
+                        <label for="editlink">Is it available online? (link)</label>
+                        <input type="text" id="editlink" name="editlink" maxlength="254">
+                    </div>
+                    <div class="input-container">
+                        <label for="editpicture">Is there a picture online? (link)</label>
+                        <input type="text" id="editpicture" name="editpicture" maxlength="254">
+                    </div>
+                    <div style="width: 100%; text-align: right;">
+                        <a href="https://www.lifewire.com/copy-image-web-address-url-1174175" target="_blank">How do I add a picture link?</a>
+                    </div>
+                    <button style="margin-top: 16px;" type="submit" onclick="submitEditGift()" id="edit-submit-button">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<iframe name="hiddenEditGiftFrame" style="display: none;"></iframe>
+
+<script>
+    var currentGift = 0;
+    var curList = 0;
+    
+    function editGift(listId, giftId) {
+        var id = parseInt(giftId);
+        var list = parseInt(listId);
+        currentGift = id;
+        curList = list;
+        changeEditPageBack();
+
+        var title = document.getElementById('title-' + currentGift).innerText;
+        var size = document.getElementById('size-' + currentGift).innerText.split(': ')[1];
+        if(size == '(none)') size = '';
+        var price = document.getElementById('price-' + currentGift).innerText.split(': ')[1];
+        if(price == '(none)') price = '';
+        else price = price.substring(1);
+        var color = document.getElementById('color-' + currentGift).innerText.split(': ')[1];
+        if(color == '(none)') color = '';
+        var details = document.getElementById('details-' + currentGift).innerText.split(': ')[1];
+        if(details == '(none)') details = '';
+        var link = document.getElementById('link-' + currentGift).href;
+        if(link == undefined) link = '';
+        var picture = document.getElementById('picture-' + currentGift).src;
+        if(picture.includes('no-picture.png')) picture = '';
+
+        document.getElementById('edit-gift-form').action = "/dashboard/list/" + list + "/editgift?giftId=" + id;
+        document.getElementById('edittitle').value = title;
+        document.getElementById('editprice').value = price;
+        document.getElementById('editsize').value = size;
+        document.getElementById('editcolor').value = color;
+        document.getElementById('editdetails').value = details;
+        document.getElementById('editlink').value = link;
+        document.getElementById('editpicture').value = picture;
+        document.getElementById('edit-gift').classList.add('showing');
+    }
+
+    function changeEditPageForward() {
+        var validName = document.getElementById('edittitle').checkValidity();
+        if(validName) {
+            document.getElementById('edit-gift-1').classList.add('closed');
+            document.getElementById('edit-gift-2').classList.remove('closed');
+            document.getElementById('edit-cancel-button').style.display = "none";
+            document.getElementById('edit-cancel-back').style.display = "block";
+        }
+        else document.getElementById('submit-button').click();
+    }
+
+    function changeEditPageBack() {
+        document.getElementById('edit-gift-1').classList.remove('closed');
+        document.getElementById('edit-gift-2').classList.add('closed');
+        document.getElementById('edit-cancel-button').style.display = "block";
+        document.getElementById('edit-cancel-back').style.display = "none";
+    }
+
+    function resetEditGift() {
+        changeEditPageBack();
+        document.getElementById('edit-gift').classList.remove('showing');
+    }
+
+    function submitEditGift() {
+        console.log("Current gift: " + currentGift)
+        if(document.getElementById('edittitle').value != '') {
+            document.getElementById('title-' + currentGift).innerText = document.getElementById('edittitle').value;
+            if(document.getElementById('editdetails').value != '') document.getElementById('details-' + currentGift).innerHTML = 
+                `<b>Details:</b> ${document.getElementById('editdetails').value}`;
+            else document.getElementById('details-' + currentGift).innerHTML = `<b>Details:</b> (none)`;
+            if(document.getElementById('editsize').value != '') document.getElementById('size-' + currentGift).innerHTML = 
+                `<b>Size:</b> ${document.getElementById('editsize').value}`;
+            else document.getElementById('size-' + currentGift).innerHTML = `<b>Size:</b> (none)`;
+            if(document.getElementById('editcolor').value != '') document.getElementById('color-' + currentGift).innerHTML = 
+                `<b>Color:</b> ${document.getElementById('editcolor').value}`;
+            else document.getElementById('color-' + currentGift).innerHTML = `<b>Color:</b> (none)`;
+            if(document.getElementById('editprice').value != '') {
+                var price = parseFloat(document.getElementById('editprice').value);
+                document.getElementById('price-' + currentGift).innerHTML = `<b>Price:</b> $${price.toFixed(2)}`;
+            }
+            else document.getElementById('price-' + currentGift).innerHTML = `<b>Price:</b> (none)`;
+            if(document.getElementById('editlink').value != '') document.getElementById('link-' + currentGift).href = document.getElementById('editlink').value;
+            else document.getElementById('link-' + currentGift).innerHTML = `<b>Link:</b> (none)`;
+            if(document.getElementById('editpicture').value != '') document.getElementById('picture-' + currentGift).src = document.getElementById('editpicture').value;
+            else document.getElementById('picture-' + currentGift).src = `/no-picture.png`;
+            
+            document.getElementById('edit-gift').classList.remove('showing');
+        }
+    }
+</script>
