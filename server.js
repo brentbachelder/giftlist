@@ -86,7 +86,7 @@ app.delete('/logout', (req, res, next) => {
 })
 
 app.get('/dashboard', checkAuthenticated, getMyLists, getMyListsPictures, getMyFavorites, getMyFavoritesPictures, (req, res) => {
-    res.render('dashboard.ejs', { myLists: myLists, favoriteLists: favoriteLists })
+    res.render('dashboard.ejs', { user: req.user, myLists: myLists, favoriteLists: favoriteLists })
 });
 
 app.post('/dashboard', checkAuthenticated, findList)
@@ -102,7 +102,7 @@ app.delete('/dashboard/list/:id/deletelist', checkAuthenticated, deleteList, del
 })
 
 app.get('/dashboard/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = true; return next(); }, getListInfo, getGifts, (req, res) => {
-    res.render('creatorList.ejs', { list: list, gifts: gifts })
+    res.render('creatorList.ejs', { user: req.user, list: list, gifts: gifts })
 })
 
 app.post('/dashboard/list/:id/newgift', checkAuthenticated, addGift)
@@ -462,7 +462,6 @@ function addGift(req, res) {
 }
 
 function editGift(req, res) {
-    console.log("Editing gift #" + req.query.giftId)
     try {
         var price = req.body.editprice
         if(price == '') price = null
@@ -491,7 +490,7 @@ function editGift(req, res) {
 
         db.query(q, [req.body.edittitle, details, link, size, color, price, picture, req.query.giftId], (err, data) => {
             if(err) console.log(err);
-            console.log("Edited gift successfully")
+            console.log("Edited gift #" + req.query.giftId +" successfully")
         })
     } catch(e) {
         console.log(e)

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Amaranth:wght@700&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amaranth:wght@700&family=Caveat&family=Roboto:wght@400;500;700&display=swap');
 * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
 body { 
     --main: #008fa8;
@@ -7,7 +7,33 @@ body {
     --text-hover: #999999;
 
     --picture-width: min(calc((100% - 16px) / 2), 248px);
+
+    width: 100%; 
+    height: 100%;
 }
+
+main { width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; background-image: url('/repeatable-design.png'); background-repeat: repeat; }
+    main > .login-container { width: 100%; display: flex; justify-content: flex-end; padding: 16px 32px; }
+        main > .login-container > .login { font-size: 16px; color: #ffffff; font-weight: 500; padding: 8px 16px; border-radius: 8px; }
+        main > .login-container > .login:hover { background-color: rgba(255, 255, 255, .1); cursor: pointer; }
+    main > .container { width: 100%; max-width: 1024px; display: flex; flex-direction: column; align-items: center; padding: 20px 16px; }
+        main > .container > .logo-gift { display: flex; width: 100%; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
+            .logo { width: 100%; max-width: 300px; }
+            .gift { width: 100%; max-width: 200px; }
+                .logo-gift img { width: 100%; height: auto; }
+        main > .container > .headline { font-family: 'Caveat', sans-serif; font-size: 40px; font-weight: 400; color: #ffffff; margin: 25px 0 40px 0; 
+            width: 100%; max-width: 524px; padding: 0 12px; text-align: center; text-shadow: 2px 2px 5px #000000; }
+        main > .container > .info-container { display: flex; flex-wrap: wrap; }
+            .info-container > .container-inner { width: calc(50% - 16px); border: 2px solid var(--text); border-radius: 8px; display: flex; flex-direction: column; 
+                align-items: center; margin: 20px 8px; max-width: 600px; background-color: #ffffff; }
+                .info-header { text-align: center; font-size: 28px; font-weight: 700; font-family: 'Amaranth', sans-serif; color: #ffffff; padding: 0 16px; 
+                    background-color: var(--text); margin-top: -17px; border-radius: 8px; }
+                .info { font-size: 16px; line-height: 24px; font-weight: 500; font-family: 'Roboto', sans-serif; width: 100%; padding: 20px 16px; text-align: center; 
+                    color: var(--text); }
+        main > .container > button { margin-top: 20px; width: 100%; max-width: 400px; height: 60px; background-color: #369136; color: #ffffff; 
+            border: 2px solid var(--text); font-family: 'Caveat', sans-serif; font-size: 24px; }
+        main > .container > button:hover { background-color: #52a052; }
+
 
 .form-container { display: flex; flex-direction: column; gap: 8px; transition-duration: .3s; overflow: hidden; white-space: nowrap; }
 .form-container.closed { height: 0; }
@@ -65,7 +91,7 @@ h1.page { text-align: left; }
     #picture-error { color: darkred; display: none; font-size: 10px; font-weight: 700; padding: 4px; text-transform: uppercase;}
     
 
-#navbar { width: 100%; height: 60px; background-color: var(--main); margin-bottom: 24px; display: flex; justify-content: center; }
+#navbar { width: 100%; height: 60px; background-image: url('/repeatable-design.png'); background-repeat: repeat; margin-bottom: 24px; display: flex; justify-content: center; }
     .navbar-container { width: 100%; height: 100%; max-width: 1024px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
         .navbar-logo-container { font-size: 34px; font-family: 'Amaranth', sans-serif; font-weight: 700; color: #ffffff; }
         .navbar-logo-container:hover { cursor: pointer; }
@@ -139,6 +165,9 @@ a.signup:hover { color: var(--main-hover); }
 
 
 @media(max-width: 476px) {
+    main > .login-container { padding: 8px 8px; }
+    .gift { max-width: 100px; }
+    main > .container > .headline { font-size: 24px; }
     .navbar-logo-container { font-size: 24px; }
     .main-container.left { justify-content: center; }
     .reglog { height: 100vh; border-radius: 0; }
@@ -147,4 +176,8 @@ a.signup:hover { color: var(--main-hover); }
     .creator-list-price-link { flex-wrap: nowrap; }
     .creator-list-price-link, .creator-list-price-link a, .creator-list-price-link .edit { font-size: 12px; line-height: 16px; }
     .creator-list-price-link a .material-symbols-outlined, .creator-list-price-link .edit { font-size: 12px; }
+}
+
+@media(max-width: 600px) {
+    .info-container > .container-inner { width: 100%; }
 }
