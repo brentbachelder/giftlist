@@ -35,6 +35,13 @@
                             </div>
                         </div>
                         <a href="/login/forgotpassword">Forgot your password?</a>
+                        <% if(messages.error) { %>
+                            <div class="error-container">
+                                <div class="login-error">
+                                    <%= messages.error %>
+                                </div>
+                            </div>
+                        <% } %>
                         <a class="signup" href="/register">Don't have an account? Sign up</a>
                     </div>
                 </form>

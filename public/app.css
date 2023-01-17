@@ -64,6 +64,9 @@ img.icon { border-radius: 50%; }
 .reglog { width: 100%; max-width: 476px; height: 665px; padding: 32px; background-color: #ffffff; border-radius: 4px; display: flex; 
     flex-direction: column; align-items: center; }
 .reglog.small { height: fit-content; }
+.error-container { width: 100%; display: flex; justify-content: center; }
+.login-error { height: 32px; width: 100%; max-width: 300px; background-color: #df7169; display: flex; align-items: center; justify-content: center; color: #ffffff;
+    font-size: 14px; font-weight: 400; border-radius: 8px; }
 
 header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 h1 { flex-grow: 1; text-align: center; font-size: 24px; font-weight: 700; font-family: 'Amaranth', sans-serif; margin: 0; }
@@ -71,6 +74,10 @@ h1.page { text-align: left; }
 .header-description { width: 100%; font-size: 14px; font-weight: 400; text-align: left; }
 .cancel-back { width: 60px; font-size: 16px; font-weight: 500; color: var(--text); text-decoration: none; margin: 0; padding: 0; }
 .cancel-back:not(.no-hover):hover { cursor: pointer; color: var(--main-hover); }
+#picture-alert { width: 100%; max-width: 500px; min-height: 50px; padding: 6px 12px; font-size: 12px; text-align: center; background-color: #ebdda2; border: 1px solid #c06d59;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 12px 20px 12px;  }
+    .picture-click { color: var(--main); text-decoration: underline; margin-left: 8px; }
+    .picture-click:hover { cursor: pointer; color: var(--main-hover); }
 
 .logo-container { height: 40px; margin: 16px 0 32px 0; display: flex; justify-content: center; align-items: center; }
     .inner { font-family: 'Amaranth', sans-serif; font-size: 30px; font-weight: 700; color: var(--main); }

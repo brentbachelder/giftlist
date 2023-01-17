@@ -5,7 +5,7 @@ if(process.env.NODE_ENV !== 'production') {
 
 const express = require('express')
 const app = express()
-const mysql = require('mysql')
+const mysql = require('mysql2')
 const bcrypt = require('bcrypt')
 const passport = require('passport')
 const flash = require('express-flash')
@@ -24,6 +24,7 @@ db.connect((err) => {
         console.log("Connected to database");
     } else {
         console.log("Conection Failed");
+        console.log(err);
     }
 });
 
@@ -74,7 +75,11 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
     res.render('register.ejs')
 })
 
-app.post('/register', checkNotAuthenticated, registerUser)
+app.post('/register', checkNotAuthenticated, registerUser, passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/register',
+    failureFlash: true
+}))
 
 app.delete('/logout', (req, res, next) => {
     req.logOut((err) => {
@@ -101,7 +106,7 @@ app.delete('/dashboard/list/:id/deletelist', checkAuthenticated, deleteList, del
     res.redirect('/dashboard/')
 })
 
-app.get('/dashboard/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = true; return next(); }, getListInfo, getGifts, (req, res) => {
+app.get('/dashboard/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = true; console.log("beef"); return next(); }, getListInfo, getGifts, (req, res) => {
     res.render('creatorList.ejs', { user: req.user, list: list, gifts: gifts })
 })
 
@@ -121,10 +126,6 @@ app.put('/list/:id', checkAuthenticated, (req, res) => {
     reserveGift(req.user.id, giftId, reserve)
 })
 
-/*app.get('/dashboard/list/:id/newgift', checkAuthenticated, checkIfCreator, (req, res) => {
-    res.render('newGift.ejs', { listId: list.id })
-})*/
-
 app.get('/register/whycreate', checkNotAuthenticated, (req, res) => {
     res.render('whyCreate.ejs')
 })
@@ -132,12 +133,6 @@ app.get('/register/whycreate', checkNotAuthenticated, (req, res) => {
 app.get('/login/terms', checkNotAuthenticated, (req, res) => {
     res.render('terms.ejs')
 })
-
-// THIS IS CAUSING AN ERROR. FIGURE IT OUT
-//The 404 Route
-/*app.all('*', function(req, res){
-    res.redirect('/dashboard');
-});*/
 
 app.listen(3000)
 
@@ -153,8 +148,7 @@ function checkAuthenticated(req, res, next) {
         res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
         return next()
     }
-
-    res.redirect('/login')
+    else res.redirect('/login')
 }
 
 // Make sure a user isn't logged in
@@ -163,22 +157,11 @@ function checkNotAuthenticated(req, res, next) {
         res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
         return res.redirect('/dashboard')
     }
-    next()
+    else return next()
 }
 
-/*function checkIfCreator(req, res, next) {
-    db.query("SELECT creator FROM lists WHERE id = ?", [req.params.id], function(err, data) {
-        if(err) return res.json(err);
-        if(data[0].creator == req.user.id)  {
-            list.id = req.params.id
-            return next()
-        }
-        else res.redirect('/list/' + req.params.id)
-    })
-}*/
-
 // Register a new user
-async function registerUser(req, res) {
+async function registerUser(req, res, next) {
     try {
         // The second argument in the bcrypt is how many times
         // to run it through the hash. 10 is pretty normal.
@@ -191,9 +174,13 @@ async function registerUser(req, res) {
         ]
 
         db.query(q, [values], (err, data) => {
-            if(err) return res.json(err);
-            console.log("Created user successfully")
-            res.redirect('/login')
+            if(err) {
+                res.redirect('/register?e=' + encodeURIComponent(err.errno))
+            }
+            else {
+                console.log("Created user successfully")
+                return next()
+            }
         })
     } catch {
         res.redirect('/register')
@@ -203,10 +190,12 @@ async function registerUser(req, res) {
 function updateUserInfo(req, res) {
     try {
         const q = "UPDATE members SET name = ?, email = ?, picture = ? WHERE id = ?";
+        var picture = req.body.picture;
+        if(picture == '') picture = null;
 
-        db.query(q, [req.body.name, req.body.email, req.body.picture, req.user.id], (err, data) => {
+        db.query(q, [req.body.name, req.body.email, picture, req.user.id], (err, data) => {
             if(err) console.log(err);
-            console.log("Successfully updated user req.user.id")
+            console.log("Successfully updated user " + req.user.id)
             res.send()
         })
     } catch(e) {
@@ -537,3 +526,8 @@ function reserveGift(userId, giftId, reserve) {
         })
     }
 }
+
+//The 404 Route
+app.all('*', function(req, res){
+    res.redirect('/dashboard');
+});

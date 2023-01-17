@@ -60,7 +60,7 @@
         var re = /\S+@\S+\.\S+/;
         if(document.getElementById("name").value != '' && document.getElementById("email").value != '' && validateEmail(document.getElementById('email').value)) {
             var newPicture = document.getElementById('picture').value;
-            if(newPicture == null) newPicture = '/no-user-icon-png';
+            if(newPicture == null || newPicture == '') newPicture = '/no-user-icon-png';
             document.getElementById('user-name').innerText = document.getElementById('name').value;
             document.getElementById('user-picture').style.backgroundImage = newPicture;
             document.getElementById('account').classList.remove('showing');

@@ -21,7 +21,7 @@
                 <div class="inner">Once Upon a Wishlist</div>
             </div>
             <div style="width: 100%;">
-                <form action="/login" method="post" id="login-form">
+                <form action="/register" method="post" id="register-form">
                     <div class="form-container">
                         <div class="input-container">
                             <label for="name">Name</label>
@@ -38,6 +38,11 @@
                                 <div id="show-password" onclick="showPassword()">Show</div>
                             </div>
                         </div>
+                        <div id="register-error" class="error-container">
+                            <div id="error-message" class="login-error">
+                                <%= messages.error %>
+                            </div>
+                        </div>
                         <a class="signup" href="/login">Already have an account? Log in</a>
                     </div>
                 </form>
@@ -45,10 +50,21 @@
             <div class="terms-container">
                 <div class="terms">Why do we need your email address? <a href="/register/whycreate">Find out</a></div>
             </div>
-            <button form="login-form" type="submit">Sign up</button>
+            <button form="register-form" type="submit">Sign up</button>
         </div>
     </div>
     <script>
+        errorDiv = document.getElementById('register-error');
+        errorDiv.style.display = "none";
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('e');
+        if(error != null) {
+            var errorMessage = "Couldn't Register User";
+            if(error == '1062') errorMessage = "Email address already registered";
+            errorDiv.style.display = "flex";
+            document.getElementById('error-message').innerText = errorMessage;
+        }
+        
         function showPassword() {
             var x = document.getElementById("password");
             var y = document.getElementById("show-password");

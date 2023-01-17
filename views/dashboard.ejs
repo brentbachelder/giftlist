@@ -13,6 +13,12 @@
     <%- include('partials/editList') %>
     <%- include('partials/newList') %>
     <div class="page-container">
+        <% if(user.picture == null || user.picture =='') { %>
+            <div id="picture-alert">You don't have a picture set for your user profile.
+                <span class="picture-click" tabindex="0" onclick="document.getElementById('account').classList.add('showing');
+                    document.getElementById('picture-alert').style.display = 'none';">Set Up Now</span>
+            </div>
+        <% } %>
         <div class="main-container">
             <header>
                 <h1>My Lists</h1>

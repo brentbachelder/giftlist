@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 
 async function initialize(passport, connection) {
     const verifyCallback = (email, password, done)=>{
-        connection.query('SELECT * FROM members WHERE email = ? ', [email], function(error, results, fields) {
+        connection.query('SELECT * FROM members WHERE email = ? ', [email], async function(error, results, fields) {
             if (error) 
                 return done(error);
 
@@ -11,14 +11,15 @@ async function initialize(passport, connection) {
             {
                 return done(null,false, {message: 'No user with that email'});
             }
-            const isValid = bcrypt.compare(password, results[0].password);
+            const isValid = await bcrypt.compare(password, results[0].password);
+            console.log("password is " + isValid)
             user = { id: results[0].id, name: results[0].name, email: results[0].email, password: results[0].password };
             if(isValid)
             {
                 return done(null, user);
             }
             else{
-                return done(null, false);
+                return done(null, false, {message:'Incorrect Password'});
             }
         });
     }
