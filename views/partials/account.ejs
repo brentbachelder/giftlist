@@ -62,7 +62,7 @@
             var newPicture = document.getElementById('picture').value;
             if(newPicture == null || newPicture == '') newPicture = '/no-user-icon-png';
             document.getElementById('user-name').innerText = document.getElementById('name').value;
-            document.getElementById('user-picture').style.backgroundImage = newPicture;
+            document.getElementById('user-picture').style.backgroundImage = `url('${newPicture}')`;
             document.getElementById('account').classList.remove('showing');
         }
     }

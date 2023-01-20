@@ -5,7 +5,7 @@ if(process.env.NODE_ENV !== 'production') {
 
 const express = require('express')
 const app = express()
-const mysql = require('mysql2')
+const mysql = require('mysql')
 const bcrypt = require('bcrypt')
 const passport = require('passport')
 const flash = require('express-flash')
@@ -13,20 +13,24 @@ const session = require('express-session')
 // This is just for the 'delete' method
 const methodOverride = require('method-override')
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
-    database: process.env.DATABASE
+    database: process.env.DATABASE,
+    waitForConnections: true,
+    connectionLimit: 20,
+    queueLimit: 0
 })
-db.connect((err) => {
+
+/*database.connect((err) => {
     if (!err) {
         console.log("Connected to database");
     } else {
         console.log("Conection Failed");
         console.log(err);
     }
-});
+});*/
 
 // We're going to require our passport-config file so we can
 // send passport through that file
@@ -106,7 +110,7 @@ app.delete('/dashboard/list/:id/deletelist', checkAuthenticated, deleteList, del
     res.redirect('/dashboard/')
 })
 
-app.get('/dashboard/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = true; console.log("beef"); return next(); }, getListInfo, getGifts, (req, res) => {
+app.get('/dashboard/list/:id', checkAuthenticated, (req, res, next) => { req.isCreator = true; return next(); }, getListInfo, getGifts, (req, res) => {
     res.render('creatorList.ejs', { user: req.user, list: list, gifts: gifts })
 })
 
@@ -283,6 +287,7 @@ function getMyListsPictures(req, res, next) {
     myLists = {};
     if(Object.keys(req.myLists).length > 0) {
         var counter = 0;
+        //Object.keys(req.myLists).forEach(key => {
         Object.keys(req.myLists).forEach(key => {
             myLists[req.myLists[key].id] = { name: req.myLists[key].name, description: req.myLists[key].description }
             db.query("SELECT picture FROM gifts WHERE list = ? AND picture IS NOT NULL LIMIT 4", [req.myLists[key].id], function(err, data) {
@@ -325,7 +330,7 @@ function getMyFavorites(req, res, next) {
     })
 }
 
-function getMyFavoritesPictures(req, res, next) {
+async function getMyFavoritesPictures(req, res, next) {
     favoriteLists = {};
     if(Object.keys(req.favoriteLists).length > 0) {
         var counter = 0;

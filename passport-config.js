@@ -32,7 +32,7 @@ async function initialize(passport, connection) {
 
     passport.deserializeUser(function(userId, done){
         connection.query('SELECT * FROM members where id = ?', [userId], function(error, results) {
-            done(null, results[0]);    
+            done(null, results[0]);
         });
     });
 }
