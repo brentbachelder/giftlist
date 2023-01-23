@@ -1,4 +1,4 @@
-# giftlist
+# Once Upon a Wishlist
 ### Create a list of gifts for a birthday, Christmas, baby shower, etc. that others can reserve so there won't be duplicate gifts.
 Language: *JavaScript*<br />
 Framework: *Express JS*<br />
